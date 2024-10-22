@@ -84,32 +84,59 @@ C’est la fin de ce premier chapitre, où nous avons posé les bases du Lightni
 
 ![bitcoin, adresses, utxo et transactions](https://youtu.be/cadCJ2V7zTg)
 
-Dans ce second chapitre, nous prenons le temps d’étudier comment fonctionnent réellement les transactions Bitcoin, ce qui nous sera bien utile pour comprendre Lightning. Nous nous attardons aussi un instant sur la notion d’adresse multi-signature, qui est capitale pour comprendre le prochain chapitre consacré à l’ouverture de canaux sur le Lightning Network.
+Ce chapitre est un peu particulier puisqu'il ne sera pas directement consacré à Lightning, mais à Bitcoin. En effet, le Lightning Network est une surcouche de Bitcoin. Il est donc essentiel de bien comprendre certains concepts fondamentaux de Bitcoin pour appréhender correctement le fonctionnement de Lightning par la suite dans les prochains chapitres. Dans ce chapitre, nous allons revoir les bases sur les adresses de réception Bitcoin, les UTXOs, ainsi que le fonctionnement des transactions Bitcoin.
 
-- Clé privée > Clé publique > Adresse : Lors d’une transaction, Alice envoie de l’argent à Bob. Ce dernier fournit une adresse donnée par sa clé publique. Alice qui a elle-même reçu l’argent sur une adresse via sa clé publique utilise désormais sa clé privée pour signer la transaction et ainsi débloquer les bitcoins de l’adresse.
-- Lors d’une transaction, dans Bitcoin tous les bitcoins doivent bouger. Nommé UTXO (Unspend Transaction Output), les bouts de bitcoin vont tous partir quitte à retourner après chez le propriétaire même :
+### Les adresses Bitcoin, les clés privées et les clés publiques
 
-Alice a 0.002 BTC, Bob a 0 BTC Alice décide d’envoyer 0.0015 BTC à Bob. Elle va signer une transaction de 0.002 BTC où 0.0015 iront à Bob et 0.0005 retourneront dans son portefeuille.
+Une adresse Bitcoin est une suite de caractères dérivée d'une **clé publique**, elle-même calculée à partir d'une **clé privée**. Comme vous le savez sûrement, on l'utilise pour verrouiller des bitcoins, ce qui équivaut à les recevoir sur notre portefeuille.
 
-![explication](assets/fr/5.webp)
+La clé privée est un élément secret qui **ne doit jamais être partagé**, alors que la clé publique et l'adresse peuvent être partagées sans risque de sécurité (leur divulgation représente seulement un risque pour votre confidentialité). Voici une représentation commune que nous adopterons tout au long de cette formation : 
+- Les **clés privées** seront représentées **à la verticale**.
+- Les **clés publiques** seront représentées **à l'horizontale**.
+- Leur couleur permet d'indiquer qui en a la possession (Alice en orange et Bob en noir...).
 
-Ici de une UTXO (Alice a 0.0002 BTC sur une adresse) nous avons donc créée 2 UTXO (Bob a 0.0015 et Alice a récupéré un nouvel UTXO (indépendent du précedent) de 0.0005 BTC).
+### Les transactions Bitcoin : envoi de fonds et scripts
 
-```
-Alice (0.002 BTC)
-  |
-  V
-Transaction Bitcoin (0.002 BTC)
-  |
-  |----> Bob (0.0015 BTC)
-  |
-  V
-Alice (nouvel UTXO: 0.0005 BTC)
-```
+Sur Bitcoin, une transaction consiste à envoyer des fonds d'une adresse à une autre. Prenons l'exemple d'Alice qui envoie 0,002 Bitcoin à Bob. Alice utilise la clé privée associée à son adresse pour **signer** la transaction, prouvant ainsi qu'elle est bien en mesure de dépenser ces fonds. Mais que se passe-t-il exactement derrière cette transaction ? Les fonds sur une adresse Bitcoin sont verrouillés par un **script**, une sorte de mini-programme qui impose certaines conditions pour dépenser les fonds.
 
-Dans Lightning Network, on utilise des multi-signatures. Il faut donc 2 signatures pour débloquer les fonds, à savoir deux clé privées pour déplacer l’argent. Cela peut donc être Alice et Bob qui, ensemble, doivent accepter de débloquer l’argent (l’UTXO). Dans LN précisément, ce sont des transactions 2/2 donc il faut absolument les 2 signatures contrairement au multi-signatures 2/3 ou 3/5 où il faut seulement une combinaison du nombre complet de clés.
+Le script le plus courant demande une signature avec la clé privée associée à l'adresse. Lorsque Alice signe une transaction avec sa clé privée, elle **déverrouille le script** qui bloque les fonds, et ces derniers peuvent alors être transférés. Le transfert des fonds implique l'ajout d'un nouveau script sur ces fonds, stipulant que pour les dépenser, il faudra cette fois-ci la signature avec la clé privée de **Bob**.
 
-![explication](assets/fr/6.webp)
+05
+
+### Les UTXO : Unspent Transaction Outputs
+
+Sur Bitcoin, ce que nous échangeons réellement ne sont pas directement des bitcoins, mais des **UTXO** (*Unspent Transaction Outputs*), c'est-à-dire des "sorties de transactions non dépensées". 
+
+Un UTXO est un morceau de bitcoin qui peut être de n'importe quelle valeur, par exemple **2 000 bitcoins**, **8 bitcoins** ou encore **8 000 sats**. Chaque UTXO est bloqué par un script, et pour le dépenser, il faut satisfaire les conditions du script, souvent une signature avec la clé privée correspondant à une adresse de réception donnée.
+
+Les UTXO ne peuvent pas être divisés. Chaque fois qu'ils sont utilisés pour dépenser le montant en bitcoins qu'ils représentent, il faut le faire en totalité. C'est un peu comme un billet de banque : si vous avez un billet de 10 € et que vous devez 5 € au boulanger, vous ne pouvez pas simplement couper le billet en deux. Vous devez lui donner le billet de 10 €, et il vous rendra 5 € de monnaie. C'est exactement le même principe pour les UTXO sur Bitcoin ! Par exemple, lorsque Alice débloque un script avec sa clé privée, elle déverrouille l'UTXO entier. Si elle souhaite n'envoyer qu'une partie des fonds représentés par cet UTXO à Bob, elle peut le "fragmenter" en plusieurs plus petits. Elle enverra alors 0.0015 BTC à Bob et se renverra le reste, 0.0005 BTC sur une **adresse de change**.
+
+Voici un exemple de transaction avec 2 sorties :
+- Un UTXO de 0.0015 BTC pour Bob, bloqué par un script exigeant la signature avec la clé privée de Bob.
+- Un UTXO de 0.0005 BTC pour Alice, bloqué par un script nécessitant sa propre signature.
+
+06
+
+### Les adresses multisignatures
+
+En plus des adresses simples générées à partir d'une seule clé publique, il est possible de créer des **adresses multisignatures** à partir de plusieurs clés publiques. Un cas particulier intéressant pour le Lightning Network est l'**adresse multisignature 2/2**, générée à partir de deux clés publiques :
+
+07
+
+Pour dépenser les fonds verrouillés avec cette adresse multisignature 2/2, il faut signer avec les deux clés privées associées aux clés publiques.
+
+08
+
+Ce type d'adresse est justement la représentation sur la blockchain Bitcoin des canaux de paiement sur le Lightning Network.
+
+**Que devez-vous retenir de ce chapitre ?**
+- Une **adresse Bitcoin** est dérivée d'une clé publique, elle-même dérivée d'une clé privée.
+- Les fonds sur Bitcoin sont verrouillés par des **scripts**, et pour dépenser ces fonds, il faut satisfaire le script, ce qui revient généralement à fournir une signature avec la clé privée correspondante.
+- Les **UTXO** sont des morceaux de bitcoins bloqués par des scripts, et chaque transaction sur Bitcoin consiste à déverrouiller un UTXO puis à en créer un ou plusieurs nouveaux en contrepartie.
+- Les **adresses multisignatures 2/2** nécessitent la signature de deux clés privées pour dépenser les fonds. Ce sont ces adresses spécifiques que l'on utilise dans le cadre de Lightning pour créer des canaux de paiement.
+
+Ce chapitre sur Bitcoin nous a permis de revoir quelques notions essentielles pour la suite. Dans le prochain chapitre, nous allons justement découvrir comment fonctionne l'ouverture des canaux sur le Lightning Network.
+
 
 # Ouverture et fermeture des canaux
 <partId>900b5b6b-ccd0-5b2f-9424-4b191d0e935d</partId>
