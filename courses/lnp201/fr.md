@@ -71,7 +71,7 @@ Prenons un exemple : si Alice possède 130 000 Satoshi de son côté, elle ne pe
 
 Ce qu’il est important de comprendre, c’est que la capacité fixe du canal limite le montant maximal d’une transaction, mais pas le nombre total de transactions possibles, ni le volume global de fonds échangés au sein du canal.
 
-Ce premier chapitre introductif nous a permis de comprendre les règles de base du fonctionnement des canaux de paiement sur le Lightning Network. Nous avons vu que :
+**Que devez-vous retenir de ce chapitre ?**
 - La capacité d’un canal est fixe et détermine le montant maximal pouvant être envoyé en une seule transaction.
 - Les fonds d’un canal sont répartis entre les deux participants, et chacun ne peut envoyer à l'autre que les fonds qu'il possède de son côté.
 - Le Lightning Network permet ainsi d’échanger des fonds de manière rapide et efficace, tout en respectant les limitations imposées par la capacité des canaux.
@@ -146,46 +146,62 @@ Ce chapitre sur Bitcoin nous a permis de revoir quelques notions essentielles po
 
 ![ouvrir un canal](https://youtu.be/B2caBC0Rxko)
 
-À présent, nous nous penchons plus en détail sur l’ouverture de canal, et comment cette dernière est effectuée au travers d’une transaction Bitcoin.
 
-Le Lightning Network a différents niveaux de communication :
+Dans ce chapitre, nous allons voir plus précisément comment ouvrir un canal de paiement sur le Lightning Network et comprendre le lien entre cette opération et le système Bitcoin sous-jacent.
 
-- Communication p2p (protocole Lightning Network)
-- Canal de paiement (protocole Lightning Network)
-- Transaction Bitcoin (protocole Bitcoin)
+### Les canaux Lightning
 
-![explication](assets/fr/7.webp)
+Comme nous l'avons vu dans le premier chapitre, un **canal de paiement** sur Lightning peut être comparé à un "tuyau" d’échange de fonds entre deux participants (**Alice** et **Bob** dans nos exemples). La capacité de ce canal correspond à la somme des fonds disponibles de chaque côté. Dans notre exemple, Alice dispose de **100 000 Satoshi** et Bob de **30 000 Satoshi**, ce qui donne une **capacité totale** de **130 000 Satoshi**.
 
-Pour ouvrir un canal, les deux pairs parlent via un canal de communication :
+09
 
-- Alice : “Salut je veux ouvrir un canal !"
-- Bob : "Ok, voici mon adresse publique.”
+### Les niveaux d’échange d’informations
 
-![explication](assets/fr/8.webp)
+Il est important de bien distinguer les différents niveaux d’échange sur Lightning :
+- **Les communications pair-à-pair (protocole Lightning)** : ce sont les messages que les nœuds Lightning s’envoient pour communiquer. Nous représenterons ces messages en ligne noire pointillée sur nos schémas.
+- **Les canaux de paiement (protocole Lightning)** : ce sont les chemins pour échanger des fonds sur Lightning, que nous représenterons en ligne noire.
+- **Les transactions Bitcoin (protocole Bitcoin)** : ce sont les transactions effectuées onchain, que nous représenterons en ligne orange.
 
-Alice a désormais 2 adresses publiques pour créer une adresse multi-sig 2/2. Elle peut maintenant faire une transaction bitcoin pour y envoyer de l’argent.
+10
 
-Considérons que Alice possède un UTXO de 0.002 BTC et qu'elle souhaite ouvrir un canal avec Bob de 0.0013 BTC.
-Elle va donc créer une transaction avec 2 UTXO en sortie :
+Notons qu'il est possible pour un nœud Lightning de communiquer via le protocole P2P sans ouvrir de canal, mais pour échanger des fonds, un canal est nécessaire.
 
-- un UTXO de 0.0013 vers l’adresse multi-sig 2/2
-- un UTXO de 0.0007 vers une de ces adresses de change (retour des UTXO).
+### Les étapes pour ouvrir un canal Lightning
 
-Cette transaction n’est pas encore publique car si elle l’est à ce stade, elle fait confiance à Bob pour pouvoir débloquer l’argent du multi-sig.
+1. **Échange de messages** : Alice souhaite ouvrir un canal avec Bob. Elle lui envoie un message contenant le montant qu'elle veut déposer dans le canal (130 000 sats) et sa clé publique. Bob répond en partageant sa propre clé publique.
 
-Mais alors comment faire ?
+11
 
-Alice va créer une deuxième transaction dite « transaction de retrait » avant de publier le dépôt des fonds dans le multi-sig.
+2. **Création de l’adresse multisignature** : Avec ces deux clés publiques, Alice crée une **adresse multisignature 2/2**, ce qui signifie que les fonds qui seront plus tard déposés sur cette adresse nécessiteront les deux signatures (Alice et Bob) pour être dépensés.
 
-![explication](assets/fr/9.webp)
+12
 
-La transaction de retrait va dépenser les fonds de l’adresse multi-sig vers une adresse à elle (ceci avant que tout soit publié).
+3. **Transaction de dépôt** : Alice prépare une transaction Bitcoin pour déposer des fonds sur cette adresse multisignature. Par exemple, elle peut décider d’envoyer **130 000 Satoshi** sur cette adresse multisignature. Cette transaction est **construite mais pas encore publiée** sur la blockchain.
 
-Une fois les deux transactions construites, elle annonce à Bob que c’est fait et lui demande une signature avec sa clé publique en lui expliquant qu’ainsi, elle pourra récupérer ses fonds si quelque chose venait à mal se passer. Bob accepte car il n’est pas malhonnête.
+13
 
-Alice peut donc récupérer les fonds seule, elle a déjà la signature de Bob. Elle publie donc les transactions. Le canal est donc ouvert avec désormais 0.0013 BTC (130 000 SAT) du côté d’Alice.
+4. **Transaction de retrait** : Avant de publier la transaction de dépôt, Alice construit une transaction de retrait pour pouvoir récupérer ses fonds en cas de problème avec Bob. En effet, lorsque Alice publiera la transaction de dépôt, ses sats seront verrouillés sur une adresse multisignature 2/2 qui nécessite à la fois sa signature, mais également la signature de Bob pour être débloquée. Alice s'assure contre ce risque de perte en construisant la transaction de retrait qui lui permet de récupérer ses fonds.
 
-![explication](assets/fr/10.webp)
+14
+
+5. **Signature de Bob** : Alice envoie à Bob la transaction de dépôt pour preuve et lui demande de signer la transaction de retrait. Une fois la signature de Bob obtenue sur la transaction de retrait, Alice est assurée de pouvoir récupérer ses fonds à tout moment, car il ne manque plus que sa propre signature pour déverrouiller le multisignature.
+
+15
+
+6. **Publication de la transaction dépôt** : Une fois la signature de Bob obtenue, Alice peut publier la transaction de dépôt sur la blockchain Bitcoin, ce qui marque ainsi l'ouverture officielle du canal Lightning entre les 2 utilisateurs.
+
+16
+
+### Quand le canal est-il ouvert ?
+
+Le canal est considéré comme ouvert une fois que la transaction de dépôt est incluse dans un bloc Bitcoin et qu'elle a atteint une certaine profondeur de confirmations (nombre de blocs suivants).
+
+**Que devez-vous retenir de ce chapitre ?**
+- L'ouverture d’un canal commence par l'échange de **messages** entre les deux parties (échange de montants et de clés publiques).
+- Un canal est formé en créant une **adresse multisignature 2/2** et en y déposant des fonds via une transaction Bitcoin.
+- La personne qui ouvre le canal s’assure de pouvoir **récupérer ses fonds** grâce à une transaction de retrait signée par l’autre partie avant de publier la transaction de dépôt.
+
+Dans le chapitre suivant, nous allons étudier le fonctionnement technique d'une transaction Lightning dans un canal.
 
 ## Transaction Lightning & d’engagement
 <chapterId>7d3fd135-129d-5c5a-b306-d5f2f1e63340</chapterId>
