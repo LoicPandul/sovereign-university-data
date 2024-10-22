@@ -203,7 +203,7 @@ Le canal est considéré comme ouvert une fois que la transaction de dépôt est
 
 Dans le chapitre suivant, nous allons étudier le fonctionnement technique d'une transaction Lightning dans un canal.
 
-## Transaction Lightning & d’engagement
+## Transaction d’engagement
 <chapterId>7d3fd135-129d-5c5a-b306-d5f2f1e63340</chapterId>
 
 ![trasanction lightning & transaction d'engagement](https://youtu.be/aPqI34tpypM)
@@ -240,7 +240,7 @@ Alice (90,000 SAT) =============== Bob (40,000 SAT)
 ```
 L’argent ne bouge donc jamais mais la balance finale s’actualise via une transaction signée mais non publiée on-chain. La transaction de retrait est donc une transaction d’engagement. Les transferts de satoshis sont une autre transaction d’engagement plus récente qui actualise la balance.
 
-## Transactions d'engagement
+## Clé de révocation
 <chapterId>f2f61e5b-badb-5947-9a81-7aa530b44e59</chapterId>
 
 ![transactions partie 2](https://youtu.be/RRvoVTLRJ84)
