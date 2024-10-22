@@ -27,52 +27,57 @@ Bonne découverte !
 
 ![Comprendre le lightning Network](https://youtu.be/PszWk046x-I)
 
-Le réseau Lightning est une infrastructure de paiement de deuxième couche, construite sur le réseau Bitcoin, qui permet des transactions rapides et peu coûteuses. Pour comprendre pleinement comment fonctionne le réseau Lightning, il est essentiel de comprendre ce que sont les canaux de paiement et comment ils fonctionnent.
+Bienvenue dans la formation LNP201 qui vise à expliquer le fonctionnement technique du Lightning Network.
 
-Un canal de paiement sur Lightning est une sorte de "voie privée" entre deux utilisateurs, qui permet des transactions Bitcoin rapides et répétitives. Lorsqu'un canal est ouvert, il est doté d'une capacité fixe, qui est définie à l'avance par les utilisateurs. Cette capacité représente le montant maximum de Bitcoin qui peut être transmis dans le canal à un moment donné.
+Le Lightning Network est un réseau de canaux de paiement construit au-dessus du protocole Bitcoin, visant à permettre des transactions rapides et à faible coût. Il permet la création de canaux de paiement entre les participants, au sein desquels les transactions peuvent être effectuées presque instantanément et avec des frais minimes, sans avoir à enregistrer chaque transaction individuellement sur la blockchain. Le Lightning Network vise ainsi à améliorer la scalabilité de Bitcoin et à rendre possible son utilisation pour des paiements de faible valeur.
 
-Les canaux de paiement sont bidirectionnels, ce qui signifie qu'ils ont deux "côtés". Par exemple, si Alice et Bob ouvrent un canal de paiement, Alice peut envoyer du Bitcoin à Bob et Bob peut envoyer du Bitcoin à Alice. Les transactions à l'intérieur du canal ne modifient pas la capacité totale du canal, mais elles modifient la répartition de cette capacité entre Alice et Bob.
+Avant d’explorer l'aspect "réseau", il est important de comprendre le concept de **canal de paiement** sur Lightning, son fonctionnement et ses spécificités. C'est l'objet de ce premier chapitre.
 
-![explication](assets/fr/1.webp)
+### Le concept de canal de paiement
 
-Pour qu'une transaction soit possible dans un canal de paiement Lightning, l'utilisateur qui envoie les fonds doit disposer de suffisamment de Bitcoin de son côté du canal. Si Alice souhaite envoyer 1 Bitcoin à Bob par le biais de leur canal, elle doit avoir au moins 1 Bitcoin de son côté du canal.
+Un canal de paiement permet à deux parties, ici **Alice** et **Bob**, d'échanger des fonds sur le réseau Lightning. Chaque protagoniste possède un nœud, symbolisé par un cercle, et le canal entre eux est représenté par un segment.
 
-Limites et Fonctionnement des Canaux de Paiement sur Lightning
+01
 
-Bien que la capacité d'un canal de paiement Lightning soit fixe, cela ne limite pas le nombre total de transactions ni le volume total de Bitcoin qui peut être transmis à travers le canal. Par exemple, si Alice et Bob ont un canal avec une capacité de 1 Bitcoin, ils peuvent effectuer des centaines de transactions de 0,01 Bitcoin ou des milliers de transactions de 0,001 Bitcoin, tant que la capacité totale du canal n'est pas dépassée à un moment donné.
+Dans notre exemple, Alice a 100 000 Satoshi de son côté du canal, et Bob en possède 30 000, pour un total de 130 000 Satoshi, ce qui constitue la **capacité du canal**.
 
-En dépit de ces limites, les canaux de paiement Lightning sont un moyen efficace d'effectuer des transactions Bitcoin rapides et peu coûteuses. Ils permettent aux utilisateurs d'envoyer et de recevoir des Bitcoin sans avoir à payer des frais de transaction élevés ou à attendre de longues périodes de confirmation sur le réseau Bitcoin.
+**Mais qu'est-ce qu'un Satoshi ?**
 
-En résumé, les canaux de paiement sur Lightning offrent une solution puissante pour ceux qui souhaitent effectuer des transactions Bitcoin rapides et peu coûteuses. Cependant, il est essentiel de comprendre leur fonctionnement et leurs limites pour pouvoir en tirer pleinement parti.
+Le **Satoshi** (ou "sat") est une unité de compte sur Bitcoin. À l’instar d’un centime pour l’euro, un Satoshi est simplement une fraction de Bitcoin. Un Satoshi équivaut à **0,00000001 Bitcoin**, soit un cent millionième de Bitcoin. Utiliser le Satoshi devient de plus en plus pratique à mesure que la valeur de Bitcoin augmente.
 
-![explication](assets/fr/2.webp)
+### L'allocation des fonds dans le canal
 
-Exemple :
+Revenons au canal de paiement. La notion clé ici est celle de "**côté du canal**". Chaque participant possède des fonds de son côté du canal : Alice 100 000 Satoshi et Bob 30 000. Comme nous l'avons vu, la somme de ces fonds représente la capacité totale du canal, un élément fixé lors de son ouverture.
 
-- Alice a 100 000 SAT
-- Bob a 30 000 SAT
+02
 
-C’est donc l’état actuel du canal. Lors d’une transaction, Alice décide d’envoyer 40 000 SAT à Bob. Elle peut car 40 000 < 100 000.
+Prenons un exemple de transaction Lightning. Si Alice souhaite envoyer 40 000 Satoshi à Bob, cela est possible, car elle dispose de suffisamment de fonds (100 000 Satoshi). Après cette transaction, Alice aura 60 000 Satoshi de son côté et Bob 70 000.
 
-Le nouvel état du canal est donc :
+03
 
-- Alice 60 000 SAT
-- Bob 70 000 SAT
+La **capacité du canal**, soit 130 000 Satoshi, reste constante. Ce qui change, c'est l'allocation des fonds. Ce système ne permet pas d'envoyer plus de fonds que ce que l'on possède. Par exemple, si Bob souhaitait renvoyer 80 000 Satoshi à Alice, il ne pourrait pas, car il n'en possède que 70 000.
 
-```
-État initial du canal :
-Alice (100,000 SAT) ============== Bob (30,000 SAT)
+Une autre manière de visualiser l'allocation des fonds est d'imaginer un **curseur** qui indique où se trouvent les fonds dans le canal. Au départ, avec 100 000 Satoshi pour Alice et 30 000 pour Bob, le curseur est logiquement du côté d'Alice. Après la transaction de 40 000 Satoshi, le curseur se déplacera légèrement du côté de Bob, qui possède désormais 70 000 Satoshi.
 
-Après le transfert de Alice à Bob de 40,000 SAT :
-Alice (60,000 SAT)  ============== Bob (70,000 SAT)
+04
 
-```
+Cette représentation est utile pour visualiser l'équilibre des fonds dans un canal.
 
-![explication](assets/fr/3.webp)
+### Les règles fondamentales d’un canal de paiement
 
-Désormais, Bob souhaite envoyer 80 000 SAT à Alice. N’ayant pas la liquidité, il ne peut pas. La capacité maximum du canal est de 130 000 SAT, avec une dépense possible jusqu'à 60 000 SAT pour Alice et de 70 000 SAT pour Bob.
+Le premier point à retenir est que la **capacité du canal** est fixe. C’est un peu comme le diamètre d’un tuyau : il détermine la quantité maximale de fonds que l’on peut envoyer en une seule fois à travers le canal.
 
-![explication](assets/fr/4.webp)
+Prenons un exemple : si Alice possède 130 000 Satoshi de son côté, elle ne peut envoyer à Bob que 130 000 Satoshi au maximum en une seule transaction. Cependant, Bob pourra ensuite renvoyer ces fonds à Alice, partiellement ou en totalité.
+
+Ce qu’il est important de comprendre, c’est que la capacité fixe du canal limite le montant maximal d’une transaction, mais pas le nombre total de transactions possibles, ni le volume global de fonds échangés au sein du canal.
+
+Ce premier chapitre introductif nous a permis de comprendre les règles de base du fonctionnement des canaux de paiement sur le Lightning Network. Nous avons vu que :
+- La capacité d’un canal est fixe et détermine le montant maximal pouvant être envoyé en une seule transaction.
+- Les fonds d’un canal sont répartis entre les deux participants, et chacun ne peut envoyer à l'autre que les fonds qu'il possède de son côté.
+- Le Lightning Network permet ainsi d’échanger des fonds de manière rapide et efficace, tout en respectant les limitations imposées par la capacité des canaux.
+
+C’est la fin de ce premier chapitre, où nous avons posé les bases du Lightning Network. Nous verrons dans les prochains comment ouvrir un canal et approfondirons les concepts abordés ici.
+
 
 ## Bitcoin, adresses, UTXO et transactions
 <chapterId>0cfb7e6b-96f0-508b-9210-90bc1e28649d</chapterId>
