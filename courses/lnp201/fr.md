@@ -208,37 +208,56 @@ Dans le chapitre suivant, nous allons étudier le fonctionnement technique d'une
 
 ![trasanction lightning & transaction d'engagement](https://youtu.be/aPqI34tpypM)
 
-![cover](assets/fr/11.webp)
+Dans ce chapitre, nous allons découvrir le fonctionnement technique d'une transaction au sein d’un canal sur le Lightning Network, c'est-à-dire lorsque des fonds sont déplacés d'un côté à l'autre du canal.
 
-Mainenant, analysons ce qui se passe réellement en coulisse lorsqu’on transfert des fonds d’un côté à l’autre d’un canal sur le Lightning Network, avec notamment la notion de transaction d’engagement. La transaction de retrait/fermeture on-chain représente l’état du canal, ceci garantit à qui appartient les fonds après chaque transfert. 
+### Rappel du cycle de vie d’un canal
 
-Donc après un transfert Lightning Network, il y a une mise à jour de cette transaction/contact non réalisé entre les deux pairs, Alice et Bob créent donc une même transaction avec l’état du canal actuel au cas où il a une fermeture :
+Comme vu précédemment, un canal Lightning commence par une **ouverture** via une transaction Bitcoin. Le canal peut être **fermé** à tout moment, également via une transaction Bitcoin. Entre ces deux moments, on peut effectuer une quasi-infinité de transactions au sein du canal, sans passer par la blockchain Bitcoin. Voyons ce qui se passe lors d'une transaction dans le canal.
 
-- Alice crée un canal avec Bob avec 130 000 SAT de son côté. La transaction de retrait acceptée par les deux en cas de fermeture dit que 130 000 SAT iront chez Alice à la fermeture, Bob est d’accord car cela est juste.
+17
 
-![cover](assets/fr/12.webp)
+### L'état initial du canal
 
-- Alice envoie 30 000 SAT à Bob. Il y a donc une nouvelle transaction de retrait qui dit qu’en cas de fermeture, Alice touchera 100 000 SAT et Bob 30 000 SAT. Les deux sont d’accord car c’est juste.
+Au moment de l’ouverture du canal, Alice a déposé **130 000 Satoshi** sur l'adresse multisignature du canal. Ainsi, à l'état initial, tous les fonds sont du côté d'Alice. Avant d’ouvrir le canal, Alice avait aussi fait signer à Bob une **transaction de retrait**, qui lui permettrait de récupérer ses fonds si elle souhaitait fermer le canal.
 
-![cover](assets/fr/13.webp)
+18
 
+### Transactions non publiées : les transactions d'engagement
 
-- Alice envoie 10 000 SAT à Bob, une nouvelle transaction de retrait est à nouveau créée pour dire qu’Alice récupère 90 000 SAT et Bob 40 000 SAT. Les deux sont d’accord car c’est juste.
+Lorsqu'Alice fait une transaction dans le canal pour envoyer des fonds à Bob, une nouvelle transaction Bitcoin est créée pour refléter ce changement dans la répartition des fonds. Cette transaction, appelée **transaction d’engagement**, n’est pas publiée sur la blockchain, mais représente le nouvel état du canal suite à la transaction Lightning. 
 
-![cover](assets/fr/14.webp)
+Prenons un exemple avec Alice qui envoie 30 000 Satoshi à Bob :
+- **Initialement** : Alice possède 130 000 Satoshi.
+- **Après la transaction** : Alice possède 100 000 Satoshi, et Bob 30 000 Satoshi.
 
-```
-État initial du canal :
-Alice (130,000 SAT) =============== Bob (0 SAT)
+Pour valider ce transfert, Alice et Bob créent une nouvelle **transaction Bitcoin non publiée** qui enverrait **100 000 Satoshi à Alice** et **30 000 Satoshi à Bob** depuis l’adresse multisignature. Les deux parties construisent cette transaction de manière indépendante, mais avec les mêmes données (montants et adresses). Une fois construite, chacun signe la transaction et échange sa signature avec l'autre. Cela permet à chacun de publier la transaction à tout moment si nécessaire pour récupérer sa part du canal sur la blockchain principale de Bitcoin.
 
-Après le premier transfert :
-Alice (100,000 SAT) =============== Bob (30,000 SAT)
+19
 
-Après le deuxième transfert :
-Alice (90,000 SAT) =============== Bob (40,000 SAT)
+### Processus de transfert : la facture (invoice)
 
-```
-L’argent ne bouge donc jamais mais la balance finale s’actualise via une transaction signée mais non publiée on-chain. La transaction de retrait est donc une transaction d’engagement. Les transferts de satoshis sont une autre transaction d’engagement plus récente qui actualise la balance.
+Lorsque Bob souhaite recevoir des fonds, il envoie à Alice une ***invoice*** pour 30 000 Satoshi. Alice procède alors au paiement de cette facture en initiant le transfert au sein du canal. Comme nous l’avons vu, ce processus repose sur la création et la signature d'une nouvelle **transaction d’engagement**.
+
+Chaque transaction d’engagement représente la nouvelle répartition des fonds dans le canal après le transfert. Dans cet exemple, après la transaction, Bob dispose de 30 000 Satoshi et Alice de 100 000 Satoshi. Si l’un des deux participants décidait de publier cette transaction d'engagement sur la blockchain, elle entraînerait la fermeture du canal et les fonds seraient distribués conformément à cette dernière répartition.
+
+20
+
+#### Nouvel état après une seconde transaction
+
+Prenons un autre exemple : après la première transaction où Alice a envoyé 30 000 Satoshi à Bob, Bob décide de renvoyer **10 000 Satoshi à Alice**. Cela crée un nouvel état du canal. La nouvelle **transaction d'engagement** représentera cette répartition actualisée : 
+- **Alice** possède maintenant **110 000 Satoshi**.
+- **Bob** possède **20 000 Satoshi**.
+
+21
+
+Encore une fois, cette transaction n’est pas publiée sur la blockchain, mais peut l’être à tout moment en cas de fermeture du canal.
+
+En résumé, lorsque des fonds sont transférés au sein d’un canal Lightning :
+- Alice et Bob créent une nouvelle **transaction d'engagement**, qui reflète la nouvelle répartition des fonds.
+- Cette transaction Bitcoin est **signée** par les deux parties, mais **non publiée** sur la blockchain Bitcoin tant que le canal reste ouvert.
+- Les transactions d’engagement garantissent que chacun des participants peut récupérer ses fonds à tout moment sur la blockchain Bitcoin en publiant la dernière transaction signée.
+
+Cependant, ce système présente une faille potentielle, que nous aborderons dans le prochain chapitre. Nous y verrons comment chaque participant peut se protéger contre une tentative de tricherie de l’autre partie.
 
 ## Clé de révocation
 <chapterId>f2f61e5b-badb-5947-9a81-7aa530b44e59</chapterId>
