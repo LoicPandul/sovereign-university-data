@@ -2,7 +2,7 @@
 name: RoninDojo
 description: Installer son nœud Bitcoin RoninDojo sur un Raspberry Pi
 ---
-![cover RoninDojo v2](assets/cover.webp)
+![cover RoninDojo](assets/cover.webp)
 
 > "*Use Bitcoin with privacy.*"
 
@@ -22,11 +22,29 @@ Si vous n'avez pas besoin de fonctionnalités généralistes ou liées au Lightn
 
 Maintenant que nous avons pu dresser le portrait de RoninDojo, voyons ensemble comment mettre en place ce nœud.
 
-## Quel matériel choisir pour installer RoninDojo v2 ?
+## Quel matériel choisir pour installer RoninDojo ?
 
-RoninDojo propose une image permettant une installation automatique de son logiciel sur un [RockPro64](https://ronindojo.io/en/download). Cependant, notre tutoriel se concentre sur la procédure manuelle d'installation sur un Raspberry Pi 4. Bien que le Raspberry Pi 5 ait été récemment lancé, et que ce tutoriel devrait théoriquement être compatible avec ce nouveau modèle, je n'ai pas encore eu l'occasion de le tester personnellement, et je n'ai trouvé aucun retour d'expérience au sein de la communauté. Dès que j'aurai acquis le Pi 5 et les composants compatibles, je mettrai ce tutoriel à jour pour vous tenir informés. En attendant, je vous recommande de privilégier le Pi 4, car il fonctionne parfaitement pour mon nœud.
+RoninDojo propose désormais une image officielle de son système d’exploitation **RoninOS**, compatible uniquement avec le **Rock5B+** et le **RockPro64**, qui sont les deux matériels officiellement supportés par l’équipe. Tous les autres matériels, comme le Raspberry Pi ou l’Odroid, relèvent désormais uniquement du support communautaire et ne sont plus recommandés pour un déploiement standard.
 
-Pour ma part, je fais fonctionner RoninDojo sur un Raspberry Pi doté de 8 Go de RAM. Bien que certains membres de la communauté aient réussi à le faire fonctionner sur des appareils avec seulement 4 Go de RAM, je n'ai pas testé cette configuration moi-même. Étant donné la faible différence de prix, il me semble judicieux de choisir la version 8 Go de RAM. Cela pourrait également s'avérer utile si vous envisagez de réaffecter votre Raspberry Pi à d'autres usages dans le futur.
+En 2025, le **Rock5B+** est le matériel conseillé pour construire votre nœud RoninDojo. Il est disponible chez des revendeurs comme Amazon ou Aliexpress, et son modèle 24 Go offre d’excellentes performances pour un usage à long terme. Voici la configuration typique recommandée :
+
+- Rock5B+ 24 Go
+- Boîtier
+- SSD NVMe m.2 de 2 To
+- Carte MicroSD SanDisk Max Endurance 64 Go
+- Alimentation adaptée
+
+Le **RockPro64**, bien qu’un peu plus ancien, reste officiellement supporté et fonctionne correctement avec la configuration suivante :
+
+- RockPro64 4 Go
+- Boîtier
+- SSD NVMe m.2 de 2 To avec adaptateur PCIe vers NVMe
+- Carte MicroSD SanDisk Max Endurance 64 Go
+- Alimentation adaptée
+
+Il est possible de télécharger directement les images **RoninOS** [depuis la page officielle](https://ronindojo.io/downloads/) pour flasher votre carte MicroSD. Une fois votre matériel prêt, vous pouvez suivre mon tutoriel.
+
+RoninDojo ne supporte plus officiellement le Raspberry Pi depuis plusieurs versions. L’équipe recommande désormais exclusivement le **Rock5B+** et, dans une moindre mesure, le **RockPro64**. Le Raspberry Pi (qu’il s’agisse du modèle 4 ou du 5) est donc considéré comme une solution communautaire expérimentale et ne bénéficie plus de mises à jour ni de support officiel. Il peut être encore possible de le faire fonctionner avec RoninOS, mais cela nécessitera un suivi des forums ou des canaux communautaires, sans garantie de stabilité à long terme.
 
 Il est important de noter que les équipes de RoninDojo ont signalé des problèmes fréquents liés au boîtier et à l'adaptateur SSD. J'ai moi-même été confronté à ces problèmes. **Il est donc fortement recommandé d'éviter les boîtiers équipés d'un câble USB pour le SSD de votre nœud.** Privilégiez à la place une carte d'extension de stockage conçue spécifiquement pour votre Raspberry Pi :
 
@@ -71,7 +89,7 @@ Enfin, installez votre Raspberry Pi dans son boîtier. Attention, une étape ult
 
 ![montage6](assets/fr/008.webp)
 
-## Comment installer RoninDojo v2 sur un Raspberry Pi 4 ?
+## Comment installer RoninDojo sur un Raspberry Pi 4 ?
 
 ### Étape 1 : Préparer la micro SD bootable
 Après avoir assemblé votre matériel, l'étape suivante consiste à installer RoninDojo. Pour cela, nous allons préparer une carte micro SD bootable à partir de votre ordinateur, en y gravant l'image disque adéquat.
@@ -364,13 +382,13 @@ Patientez le temps que l'opération se termine, puis utilisez la commande suivan
 exit
 ```
 
-Félicitations ! Votre nœud RoninDojo v2 est désormais configuré et prêt à l'emploi. Il va débuter son IBD (*Initial Block Download*), procédant au téléchargement et à la vérification de la blockchain Bitcoin depuis le bloc de Genèse. Cette étape constitue à récupérer toutes les transactions Bitcoin réalisées depuis le 3 janvier 2009, et demande un certain temps. Une fois la blockchain intégralement téléchargée, l'indexeur procédera à la compression de la base de données. La durée de l'IBD peut considérablement varier. Votre nœud RoninDojo sera pleinement opérationnel une fois ce processus achevé.
+Félicitations ! Votre nœud RoninDojo est désormais configuré et prêt à l'emploi. Il va débuter son IBD (*Initial Block Download*), procédant au téléchargement et à la vérification de la blockchain Bitcoin depuis le bloc de Genèse. Cette étape constitue à récupérer toutes les transactions Bitcoin réalisées depuis le 3 janvier 2009, et demande un certain temps. Une fois la blockchain intégralement téléchargée, l'indexeur procédera à la compression de la base de données. La durée de l'IBD peut considérablement varier. Votre nœud RoninDojo sera pleinement opérationnel une fois ce processus achevé.
 
 **Si vous procédez à la migration d'un ancien nœud RoninDojo v1** vers cette nouvelle version avec ce tutoriel tout en conservant le même SSD, votre nœud devrait automatiquement détecter et réutiliser les données existantes sur le disque, vous épargnant ainsi la nécessité de réaliser de nouveau l'IBD. Dans ce cas, il suffira d'attendre que votre nœud se resynchronise avec les derniers blocs.
 
 ### Étape 8 : « veth fix »
 
-Si vous rencontrez un bug avec votre RoninDojo v2 sur Raspberry Pi, où après une installation sans souci votre nœud devient subitement injoignable via SSH mais se rétablit après un simple redémarrage, vous devez suivre cette étape 8. Ce bug fréquent peut être facilement corrigé grâce à une solution mise au point par la communauté : le **_veth fix_**. Cette correction permet de remédier définitivement aux déconnexions intempestives. Voici comment l’appliquer.
+Si vous rencontrez un bug avec votre RoninDojo sur Raspberry Pi, où après une installation sans souci votre nœud devient subitement injoignable via SSH mais se rétablit après un simple redémarrage, vous devez suivre cette étape 8. Ce bug fréquent peut être facilement corrigé grâce à une solution mise au point par la communauté : le **_veth fix_**. Cette correction permet de remédier définitivement aux déconnexions intempestives. Voici comment l’appliquer.
 
 Ouvrez un nouveau terminal sur votre ordinateur personnel et établissez une connexion SSH avec votre nœud en utilisant la commande suivante :
 
@@ -424,7 +442,7 @@ sudo reboot now
 
 Ce processus devrait corriger le bug rencontré.
 
-## Comment utiliser son nœud RoninDojo v2 ?
+## Comment utiliser son nœud RoninDojo ?
 
 ### Connecter ses logiciels de portefeuilles à Electrs
 
@@ -544,7 +562,7 @@ Votre nœud RoninDojo intègre également _WhirlpoolCLI_, une interface de ligne
 
 Effectuer un coinjoin via Whirlpool requiert que l'application utilisée soit active pour réaliser des remixes. Cette condition peut s'avérer contraignante pour ceux désirant atteindre des niveaux élevés d'anonsets. En effet, l'appareil accueillant l'application qui intègre Whirlpool doit rester en marche en permanence. Cela signifie que pour participer à des remixes 24 heures sur 24, votre ordinateur ou votre smartphone doit rester allumé avec Samourai ou Sparrow ouverts en continu. Une solution à cette contrainte est d'utiliser _WhirlpoolCLI_ sur une machine toujours allumée, telle qu'un nœud Bitcoin, permettant ainsi à vos pièces de se remixer sans interruption, et sans nécessiter de laisser allumé un autre appareil.
 
-Un tutoriel détaillé est en préparation pour vous guider pas à pas dans le processus de coinjoin avec Samourai Wallet et RoninDojo v2, de A à Z.
+Un tutoriel détaillé est en préparation pour vous guider pas à pas dans le processus de coinjoin avec Samourai Wallet et RoninDojo, de A à Z.
 
 Pour une compréhension approfondie du coinjoin et de son utilisation sur Bitcoin, je vous invite également à consulter cet autre article : Comprendre et utiliser le coinjoin sur Bitcoin, où je détaille tout ce qu'il faut savoir sur cette technique.
 
@@ -788,7 +806,7 @@ Le calculateur vous fournit alors l'ensemble des indicateurs dont nous avons par
 
 ![boltzmann resultat](assets/fr/052.webp)
 
-### Les autres fonctionnalités de votre RoninDojo v2
+### Les autres fonctionnalités de votre RoninDojo
 
 Votre nœud RoninDojo intègre diverses autres fonctionnalités. Vous avez notamment la possibilité de scanner des informations spécifiques afin de faire en sorte de les prendre en compte. Par exemple, il se peut parfois que votre portefeuille Samourai, connecté à RoninDojo, n'affiche pas les bitcoins que vous détenez réellement. Si la balance indique 0 alors que vous êtes certain d'avoir des bitcoins sur ce portefeuille, plusieurs raisons peuvent expliquer cette situation, telles qu'une erreur dans les chemins de dérivation. Mais une des causes peut également être que votre nœud ne surveille pas correctement vos adresses. Pour résoudre ce problème, vous pouvez vous assurer que votre nœud suit bien votre `xpub` grâce à l'outil _xpub tool_. Pour accéder à cet outil via RoninUI, suivez le chemin : `Maintenance > XPUB Tool`.
 
