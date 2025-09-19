@@ -811,7 +811,7 @@ Concernant les autres onglets disponibles sur votre tableau de bord RoninUI :
 - `System Info` : Fournit des informations générales sur votre nœud, comme la température du processeur, l'usage de l'espace de stockage, ou encore les données concernant la RAM. Vous y trouverez aussi les options `Reboot` et `Shut down` pour redémarrer ou éteindre votre nœud ;
 - `Settings` : Vous permet de modifier votre mot de passe utilisateur.
 
-Voilà ! Merci d'avoir suivi ce tutoriel jusqu'à la fin. Si vous l'avez apprécié, je vous encourage à le partager sur les réseaux sociaux. Par ailleurs, si vous en avez la possibilité, envisagez de soutenir par un don les développeurs qui mettent à disposition ces logiciels libres et open source de manière gratuite pour notre communauté : [https://donate.ronindojo.io/](https://donate.ronindojo.io/).
+Voilà ! Merci d'avoir suivi ce tutoriel jusqu'à la fin. Si vous l'avez apprécié, je vous encourage à le partager sur les réseaux sociaux. Par ailleurs, si vous en avez la possibilité, envisagez de soutenir par un don les développeurs qui mettent à disposition ces logiciels libres et open source de manière gratuite pour notre communauté : [donate.ronindojo.io](https://donate.ronindojo.io/).
 
 Pour approfondir vos connaissances sur RoninDojo et découvrir davantage de ressources, je vous recommande vivement de consulter les liens vers les ressources externes mentionnées ci-dessous.
 
@@ -825,6 +825,8 @@ Pour approfondir vos connaissances sur RoninDojo et découvrir davantage de ress
 
 - [https://medium.com/@laurentmt/introducing-boltzmann-85930984a159](https://medium.com/@laurentmt/introducing-boltzmann-85930984a159)
 
+Pour approfondir vos connaissances sur les nœuds Bitcoin, je vous recommande également de suivre mon cours BTC 202 :
 
+https://planb.network/courses/3cd9cb94-82e8-417a-9c5a-02afc2589426
 
 
