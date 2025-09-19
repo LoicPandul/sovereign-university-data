@@ -240,6 +240,7 @@ L'étape suivante consiste à créer un mot de passe utilisateur, qui servira ta
 ![user credentials](assets/notext/28.webp)
 
 Une fois ces actions réalisées, patientez le temps de l'initialisation de votre nœud. Vous accéderez alors à l'interface web de RoninUI. Vous êtes presque au bout du processus, il ne reste que quelques petites étapes !
+
 ![Ronin UI](assets/notext/29.webp)
 
 ### Étape 7 : Supprimer les identifiants temporaires
@@ -300,10 +301,15 @@ La première utilité de votre nœud fraichement installé et synchronisé sera 
 
 Pour obtenir l'adresse Tor de votre Electrum Server, depuis l'interface web RoninUI, allez dans :
 `Pairing > Electrum server > Pair now`
+
 ![Pairing](assets/notext/31.webp)
+
 ![Electrs](assets/notext/32.webp)
+
 Vous devrez alors saisir l'adresse `Hostname` se terminant par `.onion` dans votre logiciel de portefeuille, accompagnée du port `50001`.
+
 ![hostname](assets/notext/33.webp)
+
 Par exemple, sur Sparrow Wallet, il suffit d'aller dans l'onglet :
 `File > Preferences > Server > Private Electrum`
 
@@ -314,7 +320,9 @@ En alternative à l'utilisation d'Electrs, Dojo vous permet de connecter votre p
 
 Pour établir la connexion, il vous suffira de scanner le QR code de votre Dojo. Pour accéder à ce QR code via RoninUI, naviguez vers :
 `Pairing > Samourai Dojo > Pair now`
+
 ![Samourai Dojo](assets/notext/35.webp)
+
 Pour associer votre portefeuille Samourai Wallet à votre Dojo, scannez simplement ce QR code lors de l'installation de l'application :
 
 ![Samourai Wallet connexion](assets/notext/36.webp)
@@ -330,16 +338,27 @@ Pour éviter ces risques, il est recommandé d'utiliser votre propre instance de
 
 Pour cela, commencez par installer *Mempool Space Visualizer* depuis RoninUI. Sur l'interface web, allez l'onglet `Dashboard` et cliquez sur `Manage` en dessous de `Mempool Space` :
 `Dashboard > Mempool Space > Manage`
+
 ![Manage mempool](assets/notext/37.webp)
+
 Cliquez ensuite sur le bouton `Install Mempool visualizer` :
+
 ![install mempool](assets/notext/38.webp)
+
 Confirmez votre mot de passe utilisateur :
+
 ![password mempool](assets/notext/39.webp)
+
 Attendez le temps de son installation, puis cliquez de nouveau sur le bouton `Manage` :
+
 ![Mempool Manage](assets/notext/40.webp)
+
 Vous obtiendrez un lien `.onion` pour accéder à votre propre instance de *Mempool.space* via le réseau Tor.
+
 ![Mempool link](assets/notext/41.webp)
+
 Je vous conseille de sauvegarder ce lien dans vos favoris sur le navigateur Tor ou de l'ajouter à l'application Tor Browser sur votre smartphone pour avoir un accès facile et sécurisé depuis n'importe où. Si vous ne disposez pas encore du navigateur Tor, vous pouvez le télécharger ici : [https://www.torproject.org/download/](https://www.torproject.org/download/)
+
 ![Mempool Tor](assets/notext/42.webp)
 
 ### Utiliser Whirlpool pour mixer ses bitcoins
@@ -422,7 +441,9 @@ Le calculateur Boltzmann est un outil pour analyser une transaction Bitcoin, en 
 Avant de détailler la procédure d'utilisation du Calculateur Boltzmann, il est important de comprendre la signification de ces indicateurs, leur méthode de calcul, et leur utilité. Bien qu'applicables à toute transaction Bitcoin, ces indicateurs sont particulièrement utiles pour évaluer la qualité d'une transaction coinjoin.
 
 **Le premier indicateur** que le logiciel calcule est le nombre total de combinaisons possibles, indiqué sous `nb combinations` dans l'outil. Basé sur les valeurs des UTXO impliqués, cet indicateur chiffre le nombre de manières dont les entrées peuvent être associées aux sorties. Autrement dit, il détermine le nombre d'interprétations plausibles qu'une transaction peut susciter. À titre d'exemple, un coinjoin structuré selon le modèle Whirlpool 5x5 présente `1496` combinaisons possibles :
+
 ![combinaisons](assets/notext/50.webp)
+
 Crédit : KYCP
 
 **Le deuxième indicateur** calculé est l'entropie d'une transaction, désignée par `Entropy`. Lorsqu'une transaction présente un nombre élevé de combinaisons possibles, il est souvent plus pertinent de se référer à son entropie. Celle-ci est définie comme le logarithme binaire du nombre de combinaisons possibles. Voici la formule utilisée :
@@ -528,7 +549,9 @@ Votre nœud RoninDojo intègre diverses autres fonctionnalités. Vous avez notam
 `Maintenance > XPUB Tool`
 
 Entrez la `xpub` qui pose problème et cliquez sur le bouton `Check` pour vérifier cette information :
+
 ![xpub tool](assets/notext/54.webp)
+
 Assurez-vous que toutes les transactions soient correctement répertoriées. Il est également important de vérifier que le type de dérivation utilisé correspond bien à celui de votre portefeuille. Si ce n'est pas le cas, cliquez sur `Retype`, puis choisissez parmi `BIP44`, `BIP49`, ou `BIP84` selon vos besoins.
 
 Au-delà de cet outil, l'onglet `Maintenance` de RoninUI regorge d'autres fonctionnalités utiles :
