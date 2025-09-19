@@ -1,0 +1,26 @@
+id: c058a8df-41c4-4171-9a4d-1824e3c7f896
+name: RoninDojo
+
+links:
+  website: https://ronindojo.io/
+  twitter: https://x.com/RoninDojoNode
+
+category: privacy
+
+contributor_names:
+  - LoicPandul
+
+tags:
+  - node
+  - software
+  - privacy
+
+# Proofreading metadata
+original_language: fr
+proofreading:
+  - language: fr
+    last_contribution_date: 2025-09-19
+    urgency: 1
+    contributor_names:
+      - LoicPandul
+    reward: 0
