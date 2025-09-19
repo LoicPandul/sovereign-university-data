@@ -153,70 +153,162 @@ Vous pouvez maintenant insérer la carte micro SD dans le port adapté de votre 
 Connectez ensuite votre Raspberry Pi à votre routeur à l'aide du câble Ethernet. Pour finir, mettez votre nœud en marche en connectant le câble d'alimentation et en actionnant le bouton de mise sous tension (si votre configuration en est pourvue).
 
 ### Étape 3 : Établir une connexion SSH avec le nœud
-Pour commencer, il est nécessaire de trouver l'adresse IP de votre nœud. Vous avez le choix entre utiliser un outil tel que _[Advanced IP Scanner](https://www.advanced-ip-scanner.com/)_ ou _[Angry IP Scanner](https://angryip.org/)_, ou consulter l'interface d'administration de votre routeur. L'adresse IP devrait se présenter sous la forme `192.168.1.??`. **Pour toutes les commandes qui suivent, remplacez `[IP]` par l'adresse IP réelle de votre nœud**, (en supprimant les crochets).
+Pour commencer, il est nécessaire de trouver l'adresse IP de votre nœud. Vous avez le choix entre utiliser un outil tel que _[Advanced IP Scanner](https://www.advanced-ip-scanner.com/)_ ou _[Angry IP Scanner](https://angryip.org/)_, ou consulter l'interface d'administration de votre routeur.
+
+L'adresse IP devrait se présenter sous la forme `192.168.1.??`. **Pour toutes les commandes qui suivent, remplacez `[IP]` par l'adresse IP réelle de votre nœud** (en supprimant les crochets).
 
 Lancez un terminal.
 
-Pour éliminer une éventuelle clé déjà associée à l'adresse IP de votre nœud, exécutez la commande : 
-`ssh-keygen -R [IP]`. 
+Pour éliminer une éventuelle clé déjà associée à l'adresse IP de votre nœud, exécutez la commande :
 
-Une erreur suite à cette commande n'est pas grave ; elle signifie simplement que la clé n'existe pas dans votre liste d'hôtes connus (ce qui est plutôt probable). Par exemple, si l'IP de votre nœud est `192.168.1.40`, la commande devient : `ssh-keygen -R 192.168.1.40`.
+```bash
+ssh-keygen -R [IP]
+```
 
-Ensuite, établissez une connexion SSH avec votre nœud en exécutant la commande : 
-`ssh pi@[IP]`.
+Une erreur suite à cette commande n'est pas grave ; elle signifie simplement que la clé n'existe pas dans votre liste d'hôtes connus (ce qui est plutôt probable).  
+Par exemple, si l'IP de votre nœud est `192.168.1.40`, la commande devient :
 
-Un message s'affichera concernant l'authenticité de l'hôte : `The authenticity of host '[IP]' can't be established.`. Cela indique que l'authenticité de l'appareil auquel vous tentez de vous connecter ne peut être vérifiée faute de clé publique connue. Lors de la première connexion SSH à un nouvel hôte, ce message apparaît systématiquement. Vous devez répondre `yes` pour ajouter sa clé publique à votre répertoire local, ce qui empêchera l'affichage de ce message d'avertissement lors de connexions SSH futures à ce nœud. Saisissez donc `yes` et appuyez sur `entrer` pour valider.
+```bash
+ssh-keygen -R 192.168.1.40
+```
 
-Il vous sera ensuite demandé de saisir votre mot de passe, celui défini précédemment comme temporaire à l'étape 1. Validez avec `entrer`. Vous serez alors connecté à votre nœud via SSH.
+Ensuite, établissez une connexion SSH avec votre nœud en exécutant la commande :
+
+```bash
+ssh pi@[IP]
+```
+
+Un message s'affichera concernant l'authenticité de l'hôte :
+
+```
+The authenticity of host '[IP]' can't be established.
+```
+
+Cela indique que l'authenticité de l'appareil auquel vous tentez de vous connecter ne peut être vérifiée faute de clé publique connue. Lors de la première connexion SSH à un nouvel hôte, ce message apparaît systématiquement. Vous devez répondre `yes` pour ajouter sa clé publique à votre répertoire local, ce qui empêchera l'affichage de ce message d'avertissement lors de connexions SSH futures à ce nœud.  
+Saisissez donc `yes` et appuyez sur `Entrer` pour valider.
+
+Il vous sera ensuite demandé de saisir votre mot de passe, celui défini précédemment comme temporaire à l'étape 1. Validez avec `Entrer`. Vous serez alors connecté à votre nœud via SSH.
 
 En résumé, voici les commandes à exécuter :
-- `ssh-keygen -R [IP]`
-- `ssh pi@[IP]`
-- `yes`
-- Saisissez le mot de passe temporaire et validez.
+
+```bash
+ssh-keygen -R [IP]
+ssh pi@[IP]
+yes
+```
+
+Puis saisissez le mot de passe temporaire et validez.
 
 ### Étape 4 : Mise à jour et préparation
-Vous êtes à présent connecté à votre nœud via une session SSH. Sur votre terminal, l'invite de commande devrait être : `pi@RoninDojo:~ $`. Pour commencer, mettez à jour la liste des paquets disponibles et installez les mises à jour des paquets existants avec la commande suivante :
-`sudo apt update && sudo apt upgrade -y`
 
-Une fois les mises à jour terminées, procédez à l'installation de *Git* et *Dialog* en utilisant la commande :
-`sudo apt install git dialog -y` 
+Vous êtes à présent connecté à votre nœud via une session SSH. Sur votre terminal, l'invite de commande devrait être :
+
+```
+pi@RoninDojo:~ $
+```
+
+Pour commencer, mettez à jour la liste des paquets disponibles et installez les mises à jour des paquets existants avec la commande suivante :
+
+```bash
+sudo apt update && sudo apt upgrade -y
+```
+
+Une fois les mises à jour terminées, procédez à l'installation de _Git_ et _Dialog_ en utilisant la commande :
+
+```bash
+sudo apt install git dialog -y
+```
 
 Ensuite, clonez la branche `master` du dépôt Git _RoninOS_ en exécutant :
-`sudo git clone --branch master https://code.samourai.io/ronindojo/RoninOS.git /opt/RoninOS`
+
+```bash
+sudo git clone --branch master https://code.samourai.io/ronindojo/RoninOS.git /opt/RoninOS
+```
 
 Exécutez le script `customize-image.sh` avec la commande :
-`cd /opt/RoninOS/ && sudo ./customize-image.sh`
 
-**Il est important de laisser le script s'exécuter sans interruption et d'attendre patiemment la fin de son processus**, qui dure environ 10 minutes. Lorsque le message `Setup is complete` s'affiche, vous pouvez avancer vers l'étape suivante.
+```bash
+cd /opt/RoninOS/ && sudo ./customize-image.sh
+```
+
+**Il est important de laisser le script s'exécuter sans interruption et d'attendre patiemment la fin de son processus**, qui dure environ 10 minutes.  
+Lorsque le message `Setup is complete` s'affiche, vous pouvez avancer vers l'étape suivante.
 
 ### Étape 5 : Lancement de RoninOS
+
 Lancez RoninOS avec la commande :
-`sudo systemctl start ronin-setup`
+
+```bash
+sudo systemctl start ronin-setup
+```
 
 Affichez les lignes du fichier de log avec la commande :
-`tail -f /home/ronindojo/.logs/setup.logs`
 
-À cette étape, **il est important de laisser faire le lancement de RoninOS et d'attendre la fin** de son exécution. Cela prend environ 40 minutes. Lorsque `All RoninDojo feature installations complete!` apparaît, vous pouvez passer à l'étape 6.
+```bash
+tail -f /home/ronindojo/.logs/setup.logs
+```
+
+À cette étape, **il est important de laisser faire le lancement de RoninOS et d'attendre la fin** de son exécution. Cela prend environ 40 minutes. Lorsque le message suivant apparaît :
+
+```
+All RoninDojo feature installations complete!
+```
+
+Vous pouvez passer à l'étape 6.
 
 ### Étape 6 : Accéder à RoninUI et changer les identifiants
-Après avoir finalisé l'installation, pour vous connecter à votre nœud via un navigateur, assurez-vous que votre ordinateur personnel soit connecté au même réseau local que votre nœud. Si vous utilisez un VPN sur votre machine, désactivez-le temporairement. Pour accéder à l'interface du nœud dans votre navigateur, saisissez dans la barre d'URL :
-- Directement l'adresse IP de votre nœud, par exemple `192.168.1.??` ;
-- Ou bien, tapez `ronindojo.local`.
 
-Une fois sur la page d'accueil de RoninUI, vous serez invité à lancer la configuration. Pour ce faire, cliquez sur le bouton `Let's start`.
+Après avoir finalisé l'installation, pour vous connecter à votre nœud via un navigateur, assurez-vous que votre ordinateur personnel soit connecté au même réseau local que votre nœud.  
+Si vous utilisez un VPN sur votre machine, désactivez-le temporairement.
+
+Pour accéder à l'interface du nœud dans votre navigateur, saisissez dans la barre d'URL :
+
+- directement l'adresse IP de votre nœud, par exemple :
+
+```
+192.168.1.??
+```
+
+- ou bien tapez :
+
+```
+ronindojo.local
+```
+
+Une fois sur la page d'accueil de **RoninUI**, vous serez invité à lancer la configuration.  
+Pour ce faire, cliquez sur le bouton `Let's start`.
 
 ![lets start](assets/fr/025.webp)
 
-À cette étape, RoninUI vous présente votre mot de passe `root`. Il est essentiel de le conserver soigneusement. Vous pouvez opter pour une sauvegarde physique, sur papier, ou l'enregistrer dans un [gestionnaire de mots de passe](https://planb.network/courses/99c46148-7080-4915-a7e0-9df0e145cd47/0b3c69b2-522c-56c8-9fb8-1562bd55930f).
+À cette étape, RoninUI vous présente votre mot de passe `root`. Il est essentiel de le conserver soigneusement. Vous pouvez opter pour une sauvegarde physique, sur papier, ou l'enregistrer dans un gestionnaire de mots de passe.
 
 ![mot de passe root](assets/fr/026.webp)
 
-Après avoir sauvegardé le mot de passe `root`, cochez la case `I have backed up Root user credentials` et cliquez sur `Continue` pour continuer.
+https://planb.network/tutorials/computer-security/authentication/bitwarden-0532f569-fb00-4fad-acba-2fcb1bf05de9
+
+https://planb.network/tutorials/computer-security/authentication/keepass-f8073bb7-5b4a-4664-9246-228e307be246
+
+Après avoir sauvegardé le mot de passe `root`, cochez la case :
+
+```
+I have backed up Root user credentials
+```
+
+puis cliquez sur `Continue` pour continuer.
 
 ![confirmer mot de passe root](assets/fr/027.webp)
 
-L'étape suivante consiste à créer un mot de passe utilisateur, qui servira tant pour l'accès à l'interface web de RoninUI que pour établir des sessions SSH avec votre nœud. Choisissez un mot de passe robuste et assurez-vous de bien le sauvegarder. Vous devrez entrer ce mot de passe à deux reprises avant de cliquer sur `Finish` pour valider. Quant au nom d'utilisateur, il est recommandé de conserver le choix par défaut, `ronindojo`. Si vous décidez de le modifier, n'oubliez pas d'ajuster les commandes des étapes suivantes en conséquence.
+L'étape suivante consiste à créer un mot de passe utilisateur, qui servira à la fois pour l'accès à l'interface web de **RoninUI** et pour établir des sessions SSH avec votre nœud.
+
+Choisissez un mot de passe robuste et assurez-vous de bien le sauvegarder. Vous devrez entrer ce mot de passe à deux reprises avant de cliquer sur `Finish` pour valider.
+
+Quant au nom d'utilisateur, il est recommandé de conserver le choix par défaut :
+
+```
+ronindojo
+```
+
+Si vous décidez de le modifier, n'oubliez pas d'ajuster les commandes des étapes suivantes en conséquence.
 
 ![user credentials](assets/fr/028.webp)
 
@@ -225,82 +317,163 @@ Une fois ces actions réalisées, patientez le temps de l'initialisation de votr
 ![Ronin UI](assets/fr/029.webp)
 
 ### Étape 7 : Supprimer les identifiants temporaires
+
 Ouvrez un nouveau terminal sur votre ordinateur personnel et établissez une connexion SSH avec votre nœud en utilisant la commande suivante :
-`SSH ronindojo@[IP]`
+
+```bash
+ssh ronindojo@[IP]
+```
 
 Si, par exemple, l'adresse IP de votre nœud est `192.168.1.40`, la commande adéquate sera :
-`SSH ronindojo@192.168.1.40`
 
-Si vous avez changé votre nom d'utilisateur lors de l'étape précédente, en remplaçant le nom d'utilisateur par défaut (`ronindojo`) par un autre, veillez à utiliser ce nouveau nom dans la commande. Par exemple, si vous avez choisi `planb` comme nom d'utilisateur et que l'adresse IP est `192.168.1.40`, la commande à entrer sera :
-`SSH planb@192.168.1.40`
+```bash
+ssh ronindojo@192.168.1.40
+```
 
-Il vous sera demandé de saisir le mot de passe utilisateur. Entrez-le puis appuyez sur `entrer` pour valider. Vous accéderez alors à l'interface RoninCLI. Utilisez les flèches de votre clavier pour naviguer jusqu'à l'option `Exit RoninDojo` et appuyez sur `entrer` pour la sélectionner.
+Si vous avez changé votre nom d'utilisateur lors de l'étape précédente, en remplaçant le nom d'utilisateur par défaut (`ronindojo`) par un autre, veillez à utiliser ce nouveau nom dans la commande.
+
+Par exemple, si vous avez choisi `planb` comme nom d'utilisateur et que l'adresse IP est `192.168.1.40`, la commande à entrer sera :
+
+```bash
+ssh planb@192.168.1.40
+```
+
+Il vous sera demandé de saisir le mot de passe utilisateur. Entrez-le puis appuyez sur `Entrer` pour valider.
+
+Vous accéderez alors à l'interface **RoninCLI**. Utilisez les flèches de votre clavier pour naviguer jusqu'à l’option `Exit RoninDojo` et appuyez sur `Entrer` pour la sélectionner.
+
 
 ![RoninCLI](assets/fr/030.webp)
 
-À ce stade, vous vous trouvez sur le terminal de votre nœud, avec une invite de commande semblable à : `ronindojo@RoninDojo:~ $`. Pour retirer l'utilisateur temporaire créé durant la configuration de la carte micro SD bootable, saisissez la commande suivante et appuyez sur `entrer` :
-`sudo deluser --remove-home pi`
+À ce stade, vous vous trouvez sur le terminal de votre nœud, avec une invite de commande semblable à :
 
-Vous serez invité à confirmer votre mot de passe utilisateur. Entrez-le et validez en pressant `entrer`. Patientez le temps que l'opération se termine, puis utilisez la commande `exit` pour quitter le terminal.
+```
+ronindojo@RoninDojo:~ $
+```
+
+Pour retirer l'utilisateur temporaire créé durant la configuration de la carte microSD bootable, saisissez la commande suivante et appuyez sur `Entrer` :
+
+```bash
+sudo deluser --remove-home pi
+```
+
+Vous serez invité à confirmer votre mot de passe utilisateur. Entrez-le et validez en pressant `Entrer`.  
+Patientez le temps que l'opération se termine, puis utilisez la commande suivante pour quitter le terminal :
+
+```bash
+exit
+```
 
 Félicitations ! Votre nœud RoninDojo v2 est désormais configuré et prêt à l'emploi. Il va débuter son IBD (*Initial Block Download*), procédant au téléchargement et à la vérification de la blockchain Bitcoin depuis le bloc de Genèse. Cette étape constitue à récupérer toutes les transactions Bitcoin réalisées depuis le 3 janvier 2009, et demande un certain temps. Une fois la blockchain intégralement téléchargée, l'indexeur procédera à la compression de la base de données. La durée de l'IBD peut considérablement varier. Votre nœud RoninDojo sera pleinement opérationnel une fois ce processus achevé.
 
 **Si vous procédez à la migration d'un ancien nœud RoninDojo v1** vers cette nouvelle version avec ce tutoriel tout en conservant le même SSD, votre nœud devrait automatiquement détecter et réutiliser les données existantes sur le disque, vous épargnant ainsi la nécessité de réaliser de nouveau l'IBD. Dans ce cas, il suffira d'attendre que votre nœud se resynchronise avec les derniers blocs.
 
 ### Étape 8 : « veth fix »
-Si vous rencontrez un bug avec votre RoninDojo v2 sur Raspberry Pi, où après une installation sans soucis, votre nœud devient subitement injoignable via SSH, mais se rétablit après un simple redémarrage, alors vous devez suivre cette étape 8. Ce bug fréquent peut être facilement corrigé grâce à une solution mise au point par la communauté : le « _veth fix_ ». Cette petite correction permet de remédier définitivement aux déconnexion intempestives. Voici comment l'appliquer.
+
+Si vous rencontrez un bug avec votre RoninDojo v2 sur Raspberry Pi, où après une installation sans souci votre nœud devient subitement injoignable via SSH mais se rétablit après un simple redémarrage, vous devez suivre cette étape 8. Ce bug fréquent peut être facilement corrigé grâce à une solution mise au point par la communauté : le **_veth fix_**. Cette correction permet de remédier définitivement aux déconnexions intempestives. Voici comment l’appliquer.
 
 Ouvrez un nouveau terminal sur votre ordinateur personnel et établissez une connexion SSH avec votre nœud en utilisant la commande suivante :
-`SSH ronindojo@[IP]`
+
+```bash
+ssh ronindojo@[IP]
+```
 
 Si, par exemple, l'adresse IP de votre nœud est `192.168.1.40`, la commande adéquate sera :
-`SSH ronindojo@192.168.1.40`
 
-Il vous sera demandé de saisir le mot de passe utilisateur. Entrez-le puis appuyez sur `entrer` pour valider. Vous accéderez alors à l'interface RoninCLI. Utilisez les flèches de votre clavier pour naviguer jusqu'à l'option `Exit RoninDojo` et appuyez sur `entrer` pour la sélectionner.
+```bash
+ssh ronindojo@192.168.1.40
+```
 
-À ce stade, vous vous trouvez sur le terminal de votre nœud, avec une invite de commande semblable à : `ronindojo@RoninDojo:~ $`. Pour appliquer le **veth fix**, saisissez la commande suivante et appuyez sur `entrer` :
-`sudo nano /etc/dhcpcd.conf`
+Il vous sera demandé de saisir le mot de passe utilisateur. Entrez-le puis appuyez sur `Entrer` pour valider.
 
-Confirmez une nouvelle fois votre mot de passe et appuyez sur `entrer`.
+Vous accéderez alors à l’interface **RoninCLI**. Utilisez les flèches de votre clavier pour naviguer jusqu'à l’option `Exit RoninDojo` et appuyez sur `Entrer` pour la sélectionner.
 
-Vous arriverez sur le fichier `dhcpcd.conf`. Vous devez copier le texte suivant, en veillant à inclure l'astérisque, et l'ajouter tout en bas du fichier :
-`denyinterfaces veth*`
+À ce stade, vous vous trouvez sur le terminal de votre nœud, avec une invite de commande semblable à :
 
-Pour ce faire, déplacez-vous jusqu'au bas du fichier à l'aide de la flèche du bas de votre clavier, puis utilisez le clic droit de votre souris pour coller le texte sur une ligne indépendante.
+```
+ronindojo@RoninDojo:~ $
+```
 
-Après avoir ajouté le texte, pressez `ctrl X` pour commencer à quitter, suivi de `ctrl Y` pour confirmer l'enregistrement des modifications, et appuyez sur `entrer` pour finaliser et retourner à l'invite de commande. Pour vous assurer que la modification a été correctement appliquée, ouvrez à nouveau le fichier `dhcpcd.conf` en utilisant la commande appropriée.
+Pour appliquer le **veth fix**, saisissez la commande suivante et appuyez sur `Entrer` :
 
-Pour terminer l'application du correctif, redémarrez votre nœud en exécutant :
-`sudo reboot now`
+```bash
+sudo nano /etc/dhcpcd.conf
+```
 
-À ce stade, vous pouvez fermer votre terminal. Laissez le temps nécessaire au redémarrage de votre RoninDojo, après quoi vous devriez être capable de vous reconnecter via l'interface graphique de votre navigateur. Ce processus devrait corriger le bug rencontré.
+Confirmez une nouvelle fois votre mot de passe et appuyez sur `Entrer`.
+
+Vous arriverez sur le fichier `dhcpcd.conf`. Vous devez copier le texte suivant, en veillant à inclure l’astérisque, et l’ajouter tout en bas du fichier :
+
+```
+denyinterfaces veth*
+```
+
+Pour ce faire, déplacez-vous jusqu’au bas du fichier à l’aide de la flèche du bas de votre clavier, puis utilisez le clic droit de votre souris pour coller le texte sur une ligne indépendante.
+
+Après avoir ajouté le texte, pressez `Ctrl + X` pour commencer à quitter, suivi de `Ctrl + Y` pour confirmer l’enregistrement des modifications, puis appuyez sur `Entrer` pour finaliser et retourner à l’invite de commande.
+
+Pour vous assurer que la modification a été correctement appliquée, ouvrez à nouveau le fichier `dhcpcd.conf` en utilisant la commande appropriée.
+
+Pour terminer l’application du correctif, redémarrez votre nœud en exécutant :
+
+```bash
+sudo reboot now
+```
+
+À ce stade, vous pouvez fermer votre terminal. Laissez le temps nécessaire au redémarrage de votre RoninDojo, après quoi vous devriez être capable de vous reconnecter via l’interface graphique de votre navigateur.
+
+Ce processus devrait corriger le bug rencontré.
 
 ## Comment utiliser son nœud RoninDojo v2 ?
 
 ### Connecter ses logiciels de portefeuilles à Electrs
-La première utilité de votre nœud fraichement installé et synchronisé sera de diffuser vos transactions au réseau Bitcoin. Vous souhaiterez probablement connecter vos différents portefeuilles à votre nœud afin de diffuser vos transactions de manière confidentielle. Vous pouvez faire cela grâce à Electrum Rust Server (electrs). Cette application est généralement préinstallée sur votre nœud RoninDojo. Si ce n'était pas le cas, vous pourriez l'installer manuellement via l'interface RoninCLI dans `Applications > Manage Applications > Install Electrum Server`.
 
-Pour obtenir l'adresse Tor de votre Electrum Server, depuis l'interface web RoninUI, allez dans :
-`Pairing > Electrum server > Pair now`
+La première utilité de votre nœud fraîchement installé et synchronisé sera de diffuser vos transactions au réseau Bitcoin. Vous souhaiterez probablement connecter vos différents portefeuilles à votre nœud afin de diffuser vos transactions de manière confidentielle.
+
+Vous pouvez faire cela grâce à **Electrum Rust Server (electrs)**. Cette application est généralement préinstallée sur votre nœud RoninDojo. Si ce n’était pas le cas, vous pourriez l’installer manuellement via l’interface **RoninCLI** dans :
+
+```
+Applications > Manage Applications > Install Electrum Server
+```
+
+Pour obtenir l’adresse **Tor** de votre Electrum Server, depuis l’interface web **RoninUI**, allez dans :
+
+```
+Pairing > Electrum server > Pair now
+```
+
 
 ![Pairing](assets/fr/031.webp)
 
 ![Electrs](assets/fr/032.webp)
 
-Vous devrez alors saisir l'adresse `Hostname` se terminant par `.onion` dans votre logiciel de portefeuille, accompagnée du port `50001`.
+Vous devrez alors saisir l’adresse `Hostname` se terminant par `.onion` dans votre logiciel de portefeuille, accompagnée du port :
+
+```
+50001
+```
 
 ![hostname](assets/fr/033.webp)
 
-Par exemple, sur Sparrow Wallet, il suffit d'aller dans l'onglet :
-`File > Preferences > Server > Private Electrum`
+Par exemple, sur **Sparrow Wallet**, il suffit d’aller dans l’onglet :
+
+```
+File > Preferences > Server > Private Electrum
+```
 
 ![Sparrow](assets/fr/034.webp)
 
 ### Connecter ses logiciels de portefeuilles à Samourai Dojo
-En alternative à l'utilisation d'Electrs, Dojo vous permet de connecter votre portefeuille logiciel compatible directement à votre nœud RoninDojo. Des portefeuilles comme Samourai Wallet et Sentinel offrent cette fonctionnalité.
 
-Pour établir la connexion, il vous suffira de scanner le QR code de votre Dojo. Pour accéder à ce QR code via RoninUI, naviguez vers :
-`Pairing > Samourai Dojo > Pair now`
+En alternative à l’utilisation d’**Electrs**, **Dojo** vous permet de connecter votre portefeuille logiciel compatible directement à votre nœud RoninDojo. Des portefeuilles comme **Samourai Wallet** et **Sentinel** offrent cette fonctionnalité.
+
+Pour établir la connexion, il vous suffira de scanner le QR code de votre Dojo.  
+Pour accéder à ce QR code via **RoninUI**, naviguez vers :
+
+```
+Pairing > Samourai Dojo > Pair now
+```
+
 
 ![Samourai Dojo](assets/fr/035.webp)
 
@@ -308,17 +481,41 @@ Pour associer votre portefeuille Samourai Wallet à votre Dojo, scannez simpleme
 
 ![Samourai Wallet connexion](assets/fr/036.webp)
 
-Si vous aviez déjà un portefeuille Samourai Wallet avant de configurer votre Ronin Dojo, il est nécessaire de sauvegarder votre portefeuille, de désinstaller puis de réinstaller l'application Samourai Wallet, avant de restaurer votre portefeuille. Lors du lancement de l'application réinstallée, vous aurez l'option de vous connecter à un nouveau Dojo. **Attention, cette démarche comporte des risques de perte de vos bitcoins si elle n'est pas correctement exécutée !** Assurez-vous d'avoir le backup de votre portefeuille Samourai dans vos fichiers ainsi que de vérifier la validité de votre passphrase via `Settings > Troubleshoot > Passphrase`. Il est également important de disposer d'une sauvegarde lisible de votre phrase de récupération et de votre passphrase. Pour plus de précision dans cette opération, il est recommandé de suivre ce tutoriel détaillé : [https://wiki.ronindojo.io/en/setup/v2_0_0-upgrade/reconnectsamourai](https://wiki.ronindojo.io/en/setup/v2_0_0-upgrade/reconnectsamourai).
+
+Si vous aviez déjà un portefeuille **Samourai Wallet** avant de configurer votre RoninDojo, il est nécessaire de sauvegarder votre portefeuille, de désinstaller puis de réinstaller l’application **Samourai Wallet**, avant de restaurer votre portefeuille.
+
+Lors du lancement de l’application réinstallée, vous aurez l’option de vous connecter à un nouveau Dojo.
+
+**Attention : cette démarche comporte des risques de perte de vos bitcoins si elle n’est pas correctement exécutée !**
+
+Assurez-vous :
+
+- d’avoir le backup de votre portefeuille Samourai dans vos fichiers,
+
+- de vérifier la validité de votre passphrase via :
+
+```
+Settings > Troubleshoot > Passphrase
+```
+
+- de disposer d’une sauvegarde lisible de votre phrase de récupération et de votre passphrase.
+
+Pour plus de précision dans cette opération, il est recommandé de suivre ce tutoriel détaillé : [*Reconnect your Samourai Wallet to your RoninDojo*](https://wiki.ronindojo.io/en/setup/v2_0_0-upgrade/reconnectsamourai).
+
 
 ### Utiliser son propre explorateur de blocs Mempool.space
-Un explorateur de blocs transforme les informations brutes de la blockchain Bitcoin en un format structuré et facilement lisible. Avec des outils comme *Mempool.space*, il est possible d'analyser des transactions, de rechercher des adresses spécifiques, ou encore de consulter en temps réel les taux de frais moyens des mempools du réseau.
 
-L'utilisation d'explorateurs de blocs en ligne présente cependant des risques pour votre confidentialité et implique une confiance dans les données fournies par des tiers. En effet, en utilisant ces services sans passer par votre propre nœud, vous pourriez involontairement divulguer des informations sur vos transactions et devez vous fier à l'exactitude des informations présentées par le propriétaire du site.
+Un explorateur de blocs transforme les informations brutes de la blockchain Bitcoin en un format structuré et facilement lisible. Avec des outils comme **Mempool.space**, il est possible d’analyser des transactions, de rechercher des adresses spécifiques ou encore de consulter en temps réel les taux de frais moyens des mempools du réseau.
 
-Pour éviter ces risques, il est recommandé d'utiliser votre propre instance de *Mempool.space* via le réseau Tor, directement hébergée sur votre nœud. Cette solution garantit la préservation de votre confidentialité et l'autonomie de vos données.
+L’utilisation d’explorateurs de blocs en ligne présente cependant des risques pour votre confidentialité et implique une confiance dans les données fournies par des tiers. En effet, en utilisant ces services sans passer par votre propre nœud, vous pourriez involontairement divulguer des informations sur vos transactions et devrez vous fier à l’exactitude des informations présentées par le propriétaire du site.
 
-Pour cela, commencez par installer *Mempool Space Visualizer* depuis RoninUI. Sur l'interface web, allez l'onglet `Dashboard` et cliquez sur `Manage` en dessous de `Mempool Space` :
-`Dashboard > Mempool Space > Manage`
+Pour éviter ces risques, il est recommandé d’utiliser votre propre instance de **Mempool.space** via le réseau Tor, directement hébergée sur votre nœud. Cette solution garantit la préservation de votre confidentialité et l’autonomie de vos données.
+
+Pour cela, commencez par installer **Mempool Space Visualizer** depuis RoninUI. Sur l’interface web, allez dans l’onglet `Dashboard` et cliquez sur `Manage` en dessous de `Mempool Space` :
+
+```
+Dashboard > Mempool Space > Manage
+```
 
 ![Manage mempool](assets/fr/037.webp)
 
@@ -363,17 +560,36 @@ Pour approfondir votre compréhension des mécanismes de calcul de ces anonsets,
 https://planb.network/tutorials/privacy/analysis/remix-whirlpool-2b887bd9-8a6a-4dca-8aa9-a1c33682b0aa
 
 
+Pour accéder à l’outil **WST**, rendez-vous sur **RoninCLI**.
 
-Pour accéder à l'outil WST, rendez-vous sur RoninCLI. Pour ce faire, ouvrez un terminal sur votre ordinateur personnel et établissez une connexion SSH avec votre nœud en utilisant la commande suivante :
-`SSH ronindojo@[IP]`
+Pour ce faire, ouvrez un terminal sur votre ordinateur personnel et établissez une connexion SSH avec votre nœud en utilisant la commande suivante :
 
-Si, par exemple, l'adresse IP de votre nœud est `192.168.1.40`, la commande adéquate sera :
-`SSH ronindojo@192.168.1.40`
+```bash
+ssh ronindojo@[IP]
+```
 
-Si vous avez changé votre nom d'utilisateur lors de l'étape 6, en remplaçant le nom d'utilisateur par défaut (`ronindojo`) par un autre, veillez à utiliser ce nouveau nom dans la commande. Par exemple, si vous avez choisi `planb` comme nom d'utilisateur et que l'adresse IP est `192.168.1.40`, la commande à entrer sera :
-`SSH planb@192.168.1.40`
+Si, par exemple, l’adresse IP de votre nœud est `192.168.1.40`, la commande adéquate sera :
 
-Il vous sera demandé de saisir le mot de passe utilisateur. Entrez-le puis appuyez sur `entrer` pour valider. Vous accéderez alors à l'interface RoninCLI. Utilisez les flèches de votre clavier pour naviguer jusqu'au menu `Samourai Toolkit` et appuyez sur `entrer` pour le sélectionner :
+```bash
+ssh ronindojo@192.168.1.40
+```
+
+Si vous avez changé votre nom d’utilisateur lors de l’étape 6, en remplaçant le nom par défaut (`ronindojo`) par un autre, veillez à utiliser ce nouveau nom dans la commande.  
+Par exemple, si vous avez choisi `planb` comme nom d’utilisateur et que l’adresse IP est `192.168.1.40`, la commande à entrer sera :
+
+```bash
+ssh planb@192.168.1.40
+```
+
+Il vous sera demandé de saisir le mot de passe utilisateur. Entrez-le puis appuyez sur `Entrer` pour valider.  
+Vous accéderez alors à l’interface **RoninCLI**. Utilisez les flèches de votre clavier pour naviguer jusqu’au menu :
+
+```
+Samourai Toolkit
+```
+
+et appuyez sur `Entrer` pour le sélectionner.
+
 
 ![Samourai Toolkit](assets/fr/043.webp)
 
@@ -385,30 +601,57 @@ Sélectionnez ensuite `Whirlpool Stat Tool` :
 
 ![WST commandes](assets/fr/045.webp)
 
-À l'écran s'affichera l'invite de commande suivante : 
-`wst#/tmp>`
+À l’écran s’affichera l’invite de commande suivante :
 
-Si vous souhaitez sortir de cette interface et retourner au menu RoninCLI, entrez simplement : 
-`quit`
+```
+wst#/tmp>
+```
 
-D'abord, il est nécessaire de configurer le proxy pour utiliser Tor, afin d'assurer la confidentialité lors de l'extraction des données depuis OXT. Saisissez la commande : 
-`socks5 127.0.0.1:9050`
+Si vous souhaitez sortir de cette interface et retourner au menu **RoninCLI**, entrez simplement :
 
-Par la suite, procédez au téléchargement des informations de la pool contenant votre transaction : 
-`download 0001`
+```bash
+quit
+```
 
-Remplacez `0001` par le code de dénomination de la pool qui vous intéresse. Les codes de dénominations sont les suivants sur WST :
+D’abord, il est nécessaire de configurer le proxy pour utiliser **Tor**, afin d’assurer la confidentialité lors de l’extraction des données depuis **OXT**. Saisissez la commande :
+
+```bash
+socks5 127.0.0.1:9050
+```
+
+Par la suite, procédez au téléchargement des informations de la pool contenant votre transaction :
+
+```bash
+download 0001
+```
+
+Remplacez `0001` par le code de dénomination de la pool qui vous intéresse.  
+Les codes de dénominations sont les suivants sur **WST** :
+
 - Pool 0,5 bitcoins : `05`
+    
 - Pool 0,05 bitcoins : `005`
+    
 - Pool 0,01 bitcoins : `001`
+    
 - Pool 0,001 bitcoins : `0001`
+    
 
-Après le téléchargement, chargez les données en remplaçant `0001` par le code de votre pool dans cette commande : `load 0001`
+Après le téléchargement, chargez les données en remplaçant `0001` par le code de votre pool dans cette commande :
+
+```bash
+load 0001
+```
 
 ![WST loading](assets/fr/046.webp)
 
-Patientez le temps du chargement, qui peut durer quelques minutes. Une fois les données chargées, pour connaître les scores d'anonsets de votre pièce, exécutez la commande `score` suivie de votre TXID (sans les crochets) :
-`score [TXID]`
+Patientez le temps du chargement, qui peut durer quelques minutes.
+
+Une fois les données chargées, pour connaître les scores d’**anonsets** de votre pièce, exécutez la commande `score` suivie de votre **TXID** (sans les crochets) :
+
+```bash
+score [TXID]
+```
 
 ![WST score](assets/fr/047.webp)
 
@@ -417,6 +660,7 @@ WST affichera alors le score rétrospectif (_Backward-looking metrics_), suivi d
 **Il est important de noter que le score prospectif de votre pièce doit être calculé à partir du TXID de votre mix initial, et non de votre mix le plus récent. Inversement, le score rétrospectif d'un UTXO est calculé à partir du TXID du dernier cycle.**
 
 ### Utiliser le Calculateur Boltzmann
+
 Le calculateur Boltzmann est un outil pour analyser une transaction Bitcoin, en offrant la capacité de mesurer son niveau d'entropie parmi d'autres métriques avancées. Ces données fournissent une évaluation quantifiée de la confidentialité d'une transaction et aident à identifier d'éventuelles erreurs. Cet outil est déjà intégré à votre nœud RoninDojo, ce qui facilite son accès et son utilisation.
 
 Avant de détailler la procédure d'utilisation du Calculateur Boltzmann, il est important de comprendre la signification de ces indicateurs, leur méthode de calcul, et leur utilité. Bien qu'applicables à toute transaction Bitcoin, ces indicateurs sont particulièrement utiles pour évaluer la qualité d'une transaction coinjoin.
@@ -496,16 +740,35 @@ Par exemple, une transaction coinjoin de type Whirlpool ne présente aucun lien 
 
 **Comment accéder au calculateur Boltzmann sur RoninDojo ?**
 
-Pour accéder à l'outil *Calculateur Boltzmann*, rendez-vous sur RoninCLI. Pour ce faire, ouvrez un terminal sur votre ordinateur personnel et établissez une connexion SSH avec votre nœud en utilisant la commande suivante :
-`SSH ronindojo@[IP]`
+Pour accéder à l’outil **Calculateur Boltzmann**, rendez-vous sur **RoninCLI**.
 
-Si, par exemple, l'adresse IP de votre nœud est `192.168.1.40`, la commande adéquate sera :
-`SSH ronindojo@192.168.1.40`
+Pour ce faire, ouvrez un terminal sur votre ordinateur personnel et établissez une connexion SSH avec votre nœud en utilisant la commande suivante :
 
-Si vous avez changé votre nom d'utilisateur lors de l'étape 6, en remplaçant le nom d'utilisateur par défaut (`ronindojo`) par un autre, veillez à utiliser ce nouveau nom dans la commande. Par exemple, si vous avez choisi `planb` comme nom d'utilisateur et que l'adresse IP est `192.168.1.40`, la commande à entrer sera :
-`SSH planb@192.168.1.40`
+```bash
+ssh ronindojo@[IP]
+```
 
-Il vous sera demandé de saisir le mot de passe utilisateur. Entrez-le puis appuyez sur `entrer` pour valider. Vous accéderez alors à l'interface RoninCLI. Utilisez les flèches de votre clavier pour naviguer jusqu'au menu `Samourai Toolkit` et appuyez sur `entrer` pour le sélectionner :
+Si, par exemple, l’adresse IP de votre nœud est `192.168.1.40`, la commande adéquate sera :
+
+```bash
+ssh ronindojo@192.168.1.40
+```
+
+Si vous avez changé votre nom d’utilisateur lors de l’étape 6, en remplaçant le nom par défaut (`ronindojo`) par un autre, veillez à utiliser ce nouveau nom dans la commande.  
+Par exemple, si vous avez choisi `planb` comme nom d’utilisateur et que l’adresse IP est `192.168.1.40`, la commande à entrer sera :
+
+```bash
+ssh planb@192.168.1.40
+```
+
+Il vous sera demandé de saisir le mot de passe utilisateur. Entrez-le puis appuyez sur `Entrer` pour valider.  
+Vous accéderez alors à l’interface **RoninCLI**. Utilisez les flèches de votre clavier pour naviguer jusqu’au menu :
+
+```
+Samourai Toolkit
+```
+
+et appuyez sur `Entrer` pour le sélectionner.
 
 ![Samourai Toolkit](assets/fr/043.webp)
 
@@ -526,8 +789,8 @@ Le calculateur vous fournit alors l'ensemble des indicateurs dont nous avons par
 ![boltzmann resultat](assets/fr/052.webp)
 
 ### Les autres fonctionnalités de votre RoninDojo v2
-Votre nœud RoninDojo intègre diverses autres fonctionnalités. Vous avez notamment la possibilité de scanner des informations spécifiques afin de faire en sorte de les prendre en compte. Par exemple, il se peut parfois que votre portefeuille Samourai, connecté à RoninDojo, n'affiche pas les bitcoins que vous détenez réellement. Si la balance indique 0 alors que vous êtes certain d'avoir des bitcoins sur ce portefeuille, plusieurs raisons peuvent expliquer cette situation, telles qu'une erreur dans les chemins de dérivation. Mais une des causes peut également être que votre nœud ne surveille pas correctement vos adresses. Pour résoudre ce problème, vous pouvez vous assurer que votre nœud suit bien votre `xpub` grâce à l'outil _xpub tool_. Pour accéder à cet outil via RoninUI, suivez le chemin : 
-`Maintenance > XPUB Tool`
+
+Votre nœud RoninDojo intègre diverses autres fonctionnalités. Vous avez notamment la possibilité de scanner des informations spécifiques afin de faire en sorte de les prendre en compte. Par exemple, il se peut parfois que votre portefeuille Samourai, connecté à RoninDojo, n'affiche pas les bitcoins que vous détenez réellement. Si la balance indique 0 alors que vous êtes certain d'avoir des bitcoins sur ce portefeuille, plusieurs raisons peuvent expliquer cette situation, telles qu'une erreur dans les chemins de dérivation. Mais une des causes peut également être que votre nœud ne surveille pas correctement vos adresses. Pour résoudre ce problème, vous pouvez vous assurer que votre nœud suit bien votre `xpub` grâce à l'outil _xpub tool_. Pour accéder à cet outil via RoninUI, suivez le chemin : `Maintenance > XPUB Tool`.
 
 Entrez la `xpub` qui pose problème et cliquez sur le bouton `Check` pour vérifier cette information :
 
@@ -548,12 +811,20 @@ Concernant les autres onglets disponibles sur votre tableau de bord RoninUI :
 - `System Info` : Fournit des informations générales sur votre nœud, comme la température du processeur, l'usage de l'espace de stockage, ou encore les données concernant la RAM. Vous y trouverez aussi les options `Reboot` et `Shut down` pour redémarrer ou éteindre votre nœud ;
 - `Settings` : Vous permet de modifier votre mot de passe utilisateur.
 
-Voilà ! Merci d'avoir suivi ce tutoriel jusqu'à la fin. Si vous l'avez apprécié, je vous encourage à le partager sur les réseaux sociaux. Par ailleurs, si vous en avez la possibilité, envisagez de soutenir par un don les développeurs qui mettent à disposition ces logiciels libres et open source de manière gratuite pour notre communauté : [https://donate.ronindojo.io/](https://donate.ronindojo.io/). Pour approfondir vos connaissances sur RoninDojo et découvrir davantage de ressources, je vous recommande vivement de consulter les liens vers les ressources externes mentionnées ci-dessous.
+Voilà ! Merci d'avoir suivi ce tutoriel jusqu'à la fin. Si vous l'avez apprécié, je vous encourage à le partager sur les réseaux sociaux. Par ailleurs, si vous en avez la possibilité, envisagez de soutenir par un don les développeurs qui mettent à disposition ces logiciels libres et open source de manière gratuite pour notre communauté : [https://donate.ronindojo.io/](https://donate.ronindojo.io/).
+
+Pour approfondir vos connaissances sur RoninDojo et découvrir davantage de ressources, je vous recommande vivement de consulter les liens vers les ressources externes mentionnées ci-dessous.
 
 **Ressources externes :**
-- [https://ronindojo.io/index.html](https://ronindojo.io/index.html)
+
+- [https://ronindojo.io/](https://ronindojo.io/)
+
 - [https://wiki.ronindojo.io/en/home](https://wiki.ronindojo.io/en/home)
+
 - [https://gist.github.com/LaurentMT/e758767ca4038ac40aaf](https://gist.github.com/LaurentMT/e758767ca4038ac40aaf)
+
 - [https://medium.com/@laurentmt/introducing-boltzmann-85930984a159](https://medium.com/@laurentmt/introducing-boltzmann-85930984a159)
-- [https://wiki.ronindojo.io/en/setup/V2_0_0-upgrade-raspberry](https://wiki.ronindojo.io/en/setup/V2_0_0-upgrade-raspberry)
+
+
+
 
