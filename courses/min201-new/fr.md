@@ -1,8 +1,11 @@
 ---
-name: 
-goal: 
+name: Maîtriser les fondamentaux du minage de Bitcoin
+goal: Comprendre le rôle du temps, des incitations et de la gouvernance dans le minage de Bitcoin.
 objectives:
-  - 
+  - Clarifier les règles temporelles du consensus et leurs contraintes techniques.
+  - Analyser les incitations économiques du minage et le pouvoir des mineurs.
+  - Déconstruire les critiques énergétiques et situer leurs enjeux.
+  - Comprendre le fonctionnement des pools et leurs compromis.
 ---
 
 
