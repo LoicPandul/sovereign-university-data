@@ -127,9 +127,11 @@ Lorsqu'on demande à quoi sert la preuve de travail ou le minage, la réponse la
 
 Un algorithme de chiffrement, aussi robuste soit-il, ne sécurise rien si la clé privée est notée sur un post-it collé à l'écran de votre ordinateur. Un nœud Bitcoin qui valide les règles de consensus ne sécurise rien si son opérateur cède à la première injonction d'un gouvernement hostile. Une ferme de minage ne protège rien si son propriétaire accepte de censurer les transactions qu'on lui demande de filtrer. Dans chacun de ces cas, la technologie reste la même, mais la sécurité a disparu.
 
-Ce qui sécurise Bitcoin à la fin, ce sont toujours les personnes qui font fonctionner le système et qui acceptent les risques associés. Un opérateur de nœud qui refuse d'appliquer une mise à jour contraire à ses valeurs prend un risque : celui de se retrouver isolé, ou sous pression juridique. Un mineur qui choisit de ne pas censurer certaines transactions prend un risque : celui d'être ciblé par des régulateurs. Un commerçant qui accepte le bitcoin comme moyen de paiement prend un risque : celui de s'exposer à une législation défavorable. C'est la somme de ces décisions individuelles, prises par des milliers de personnes à travers le monde, qui constitue la véritable sécurité de Bitcoin.
+Ce qui sécurise Bitcoin à la fin, **ce sont toujours les personnes** qui font fonctionner le système et qui acceptent les risques associés. Un opérateur de nœud qui refuse d'appliquer une mise à jour contraire à ses valeurs prend un risque : celui de se retrouver isolé, ou sous pression juridique. Un mineur qui choisit de ne pas censurer certaines transactions prend un risque : celui d'être ciblé par des régulateurs. Un commerçant qui accepte le bitcoin comme moyen de paiement prend un risque : celui de s'exposer à une législation défavorable. C'est la somme de ces décisions individuelles, prises par des milliers de personnes à travers le monde, qui constitue la véritable sécurité de Bitcoin.
 
 La décentralisation prend ici tout son sens. Ce n'est pas uniquement une propriété technique que l'on mesure en comptant les nœuds. C'est également un mécanisme de répartition du risque. Dans un système centralisé (une banque, un service de paiement...), une seule entité porte l'intégralité de la responsabilité et de l'exposition aux risques. Si cette entité est contrainte, corrompue ou simplement défaillante, tout le système tombe. Dans Bitcoin, ce risque est fragmenté et diffusé entre des milliers de participants indépendants, répartis dans des juridictions différentes, opérant sous des cadres légaux différents. Pour compromettre le système, il ne suffit pas de cibler une entreprise ou un serveur : il faudrait contraindre simultanément un nombre suffisant de ces acteurs dispersés, ce qui est d'une difficulté bien supérieure.
+
+012
 
 Inversement, si demain plus personne n'était disposé à opérer un nœud, à sélectionner les transactions honnêtement ou à utiliser le bitcoin comme monnaie, aucune quantité de hashrate ne pourrait sauver le système. Un système où tous les mineurs sont concentrés dans une seule juridiction, où tous les nœuds sont hébergés chez le même fournisseur cloud, et où tous les utilisateurs passent par le même intermédiaire, dispose peut-être d'un hashrate élevé, mais sa sécurité réelle est fragile. La technologie fournit les outils (la cryptographie, le protocole, le mécanisme de consensus...), mais ce sont les individus qui décident de les utiliser, et qui acceptent les coûts et les risques que cela implique.
 
@@ -145,6 +147,8 @@ Si l'on se fie au titre du White Paper, Bitcoin est un système de cash électro
 
 Dans un système monétaire physique, reposant par exemple sur des pièces d’or, la double dépense ne pose pas de problème. Le simple fait de remettre physiquement sa pièce empêche mécaniquement de la réutiliser ultérieurement de manière frauduleuse, puisqu’on n’en a tout simplement plus la possession.
 
+013
+
 Dans un système de monnaie numérique, en revanche, rien n’empêche un utilisateur de dupliquer les mêmes données et de tenter de dépenser les mêmes unités monétaires deux fois, auprès de deux destinataires différents. Pour s’assurer qu’aucune fraude n’a lieu, lorsqu’on reçoit une unité monétaire via une transaction, il est donc nécessaire de pouvoir vérifier que cette unité n’a jamais été dépensée auparavant. Autrement dit, le problème revient à être capable de vérifier l’absence d’un paiement dans le passé. Or, le seul moyen d’y parvenir consiste à disposer d’une connaissance complète de l’ensemble des dépenses passées.
 
 Satoshi Nakamoto résume cet enjeu dans le White Paper par cette célèbre phrase :
@@ -153,9 +157,11 @@ Satoshi Nakamoto résume cet enjeu dans le White Paper par cette célèbre phras
 
 [Nakamoto, S. (2008). *Bitcoin: A Peer-to-Peer Electronic Cash System.*](https://bitcoin.org/bitcoin.pdf)
 
-Dans un système de monnaie numérique centralisée, ce problème est facile à gérer : une entité tient un registre unique et fait autorité (la banque par exemple). Mais dans un système pair-à-pair comme Bitcoin, sans serveur central et sans autorité, il faut que tous les participants du réseau soient au courant de toutes les transactions et, surtout, qu'ils s'entendent sur un historique unique.
+Dans un système de monnaie numérique centralisée, ce problème est facile à gérer : une entité tient un registre unique et fait autorité (la banque par exemple).
 
-Autrement dit, pour savoir qu'un bitcoin n'a pas déjà été dépensé, il faut disposer d'un historique complet, ordonné et consensuel de toutes les transactions passée.
+014
+
+Mais dans un système pair-à-pair comme Bitcoin, sans serveur central et sans autorité, il faut que tous les participants du réseau soient au courant de toutes les transactions et, surtout, qu'ils s'entendent sur un historique unique. Autrement dit, pour savoir qu'un bitcoin n'a pas déjà été dépensé, il faut disposer d'un historique complet, ordonné et consensuel de toutes les transactions passée.
 
 Cet historique commun, c’est la blockchain. Elle enregistre l’ensemble des transactions effectuées, les organise au sein de blocs, et sert de référence à partir de laquelle les nœuds mettent à jour leur UTXO set. L'UTXO set permet ensuite de vérifier rapidement, lors de la validation de nouvelles transactions, que les fonds utilisés n’ont pas déjà été dépensés par le passé.
 
@@ -172,6 +178,8 @@ C'est précisément ici qu'intervient le premier rôle de la preuve de travail. 
 La preuve de travail ne se contente pas de fournir un critère de sélection entre chaînes concurrentes. Elle résout un problème plus profond dans les mécanisme de décision collective : celui de la résistance aux attaques Sybil.
 
 Une attaque Sybil consiste à créer un grand nombre de fausses identités au sein d’un système afin d’exercer une influence indue ou d’obtenir un avantage non autorisé. Par exemple, s’il y a un vote dans un village pour élire le maire, et que Bob, habitant de ce village, parvient à glisser plusieurs bulletins dans l’urne en se faisant passer pour différentes personnes, alors qu’il ne devrait voter qu’une seule fois, il s’agit d’une forme d’attaque Sybil. Bob a exercé une influence indue sur un mécanisme de prise de décision en multipliant artificiellement les identités.
+
+015
 
 Et justement, dans le fonctionnement de Bitcoin, il existe un mécanisme de prise de décision. Nous disposons d’un historique commun des dépenses réalisées, mais se pose alors une question : qui a le droit d’écrire cet historique ? Il a été décidé que cette prise de décision se ferait de manière alternée. À chaque nouveau bloc, une nouvelle entité est désignée pour ajouter une portion supplémentaire à l’historique commun.
 
