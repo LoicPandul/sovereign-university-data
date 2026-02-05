@@ -205,15 +205,19 @@ Le consensus de Nakamoto par preuve de travail ne permet pas, à proprement parl
 
 Pour comprendre ce mécanisme, il faut revenir à la structure de la blockchain. Chaque bloc contient l'empreinte cryptographique du bloc précédent. Modifier une transaction dans un bloc ancien implique de recalculer l'empreinte de ce bloc, puis celle du bloc suivant, puis du suivant, et ainsi de suite. L'attaquant devrait refaire la preuve de travail de tous ces blocs, puis rattraper et dépasser le travail que la chaîne honnête continue d'accumuler pendant ce temps. Plus les blocs s'accumulent au-dessus d'une transaction, plus la réécriture de l'historique devient coûteuse et improbable.
 
+016
+
 Comme l'explique LaurentMT dans son article [*Gravity*](https://medium.com/@laurentmt/gravity-10e1a25d2ab2), la preuve de travail possède deux propriétés importante : elle est **globale** et **cumulative**. Lorsqu'un nouveau bloc est miné, la protection apportée par sa preuve de travail ne s'applique pas uniquement aux transactions contenues dans ce bloc. Elle s'applique simultanément et uniformément à tous les UTXOs existants dans le système. Chaque UTXO accumule ainsi une quantité croissante de protection face à la réécriture, à chaque nouveau bloc miné, indépendamment du moment de sa création.
 
 > *In the case of Bitcoin: when a new block is mined, the security provided by its PoW is simultaneously and equally applied to all the existing UTXOs.*
 
 [LaurentMT (2018). *Gravity.*](https://medium.com/@laurentmt/gravity-10e1a25d2ab2)
 
-Pour bien visualiser cela, l'analogie proposée par LaurentMT dans cet article est intéressante : la preuve de travail agit comme un champ gravitationnel dont la masse augmente avec chaque nouveau bloc. Cette "gravité" exerce une influence simultanée et homogène sur tous les corps (UTXOs) présents dans son champ. Plus la masse s'accumule, plus il devient difficile de déplacer un objet qui y est enraciné, c'est-à-dire de réécrire une transaction passée.
+Pour bien visualiser cela, l'analogie proposée par LaurentMT dans cet article est intéressante : la preuve de travail agit comme un champ gravitationnel dont la masse augmente avec chaque nouveau bloc. Cette "gravité" exerce une influence simultanée et homogène sur tous les corps (UTXOs) présents dans son champ. Plus la masse s'accumule, plus il devient difficile de déplacer un objet qui y est enraciné (c'est-à-dire de réécrire une transaction passée).
 
-Attaquer l'historique de Bitcoin implique donc deux types de coûts.
+017
+
+Pour résumer, attaquer l'historique de Bitcoin implique donc deux types de coûts :
 - Le premier est un coût matériel et énergétique direct : il faut acquérir suffisamment de puissance de calcul pour reconstruire une chaîne alternative avec plus de travail que la chaîne honnête, ce qui nécessite des investissements considérables en machines et en électricité.
 - Le second est un coût d'opportunité : pendant toute la durée de l'attaque, l'attaquant renonce aux revenus qu'il aurait pu obtenir en minant honnêtement.
 
@@ -223,23 +227,27 @@ Plus une transaction Bitcoin accumule de confirmations, plus le coût combiné d
 
 #### Un problème inédit dans l'histoire monétaire
 
-Avant Bitcoin, aucune monnaie n'a véritablement eu besoin d'un mécanisme de distribution initiale programmé. La raison en est simple : les monnaies historiques se sont toujours adossées, au moins à l'origine, à des ressources naturelles préexistantes. Les coquillages *cauris*, utilisés comme monnaie d'échange en Afrique de l'Ouest, en Chine et en Asie du Sud pendant des siècles, n'ont pas eu de distribution initiale. Ils étaient collectés, échangés, et leur acceptation comme instrument monétaire s'est faite progressivement, par un processus social spontané. L'or a suivi un chemin similaire : sa valeur en tant que matériau décoratif et artisanal a précédé son usage monétaire. Les premières pièces d'or frappées, comme celles du royaume de Lydie au VIIe siècle avant notre ère, formalisaient un usage qui existait déjà de fait. Même les monnaies fiduciaires modernes, bien qu'elles ne soient plus directement convertibles en métal précieux comme vous le savez, tirent leur origine historique de certificats de dépôt représentant une quantité d'or ou d'argent physiquement détenue.
+Avant Bitcoin, aucune monnaie n'a véritablement eu besoin d'un mécanisme de distribution initiale programmé. La raison en est simple : les monnaies historiques se sont toujours adossées, au moins à l'origine, à des ressources naturelles préexistantes. Les coquillages *cauris*, utilisés comme monnaie d'échange en Afrique de l'Ouest, en Chine et en Asie du Sud pendant des siècles, n'ont pas eu de distribution initiale. Ils étaient collectés, échangés, et leur acceptation comme instrument monétaire s'est faite progressivement, par un processus social spontané. L'or a suivi un chemin similaire : sa valeur en tant que matériau décoratif et artisanal a précédé son usage monétaire. Les premières pièces d'or frappées, comme celles du royaume de Lydie au VIIe siècle avant notre ère, formalisaient un usage qui existait déjà de fait. Même les monnaies fiat modernes, bien qu'elles ne soient plus directement convertibles en métal précieux comme vous le savez, tirent leur origine de certificats de dépôt représentant une quantité d'or ou d'argent physiquement détenue.
 
 Dans tous ces cas, la distribution initiale de la monnaie ne posait pas de problème conceptuel. Les unités monétaires existaient déjà dans la nature sous forme de ressource physique, et leur mise en circulation s'opérait naturellement. Personne n'a eu besoin de décider comment distribuer l'or aux humains : ceux qui le trouvaient, l'extrayaient ou l'obtenaient par l'échange en disposaient, et le marché se chargeait du reste.
 
-Bitcoin est donc la première forme de monnaie créée intentionnellement à partir de rien, dans le but explicite de servir de système de cash électronique pair-à-pair. Il n'existe pas de bitcoin dans la nature attendant d'être découvert. Chaque unité doit être créée par le protocole lui-même. Cela pose donc un nouveau problème : par quel mécanisme mettre ces unités en circulation de manière compatible avec les principes d'un système sans autorité centrale ?
+Bitcoin est donc la première forme de monnaie créée intentionnellement à partir de rien, dans le but explicite de servir de système de cash électronique pair-à-pair. Il n'existe pas de bitcoin dans la nature attendant d'être découvert. Chaque unité doit être créée via le protocole lui-même. Cela pose donc un nouveau problème : par quel mécanisme mettre ces unités en circulation de manière compatible avec les principes d'un système sans autorité centrale ?
 
 #### Le théorème de régression et son invalidation
 
 Cette situation entre justement en tension avec une théorie économique très connue des bitcoiners : le théorème de régression, formulé par Ludwig von Mises dans *The Theory of Money and Credit* en 1912. Selon ce théorème, la valeur d'une monnaie peut toujours être "régressée", c'est-à-dire retracée, jusqu'à sa valeur d'usage en tant que bien non monétaire. L'idée est qu'un bien acquiert d'abord une valeur d'échange grâce à son utilité intrinsèque (l'or comme métal décoratif, le sel comme conservateur alimentaire...), puis, progressivement, cette valeur d'échange conduit à son adoption comme instrument monétaire. Mises considérait cette progression comme une nécessité logique et non simplement une observation historique.
 
-Or Bitcoin vient directement contredire cette affirmation. Satoshi Nakamoto a explicitement conçu Bitcoin comme une monnaie dès l'origine, comme en témoigne le titre même du White Paper : `Bitcoin: A Peer-to-Peer Electronic Cash System`. Le bitcoin n'a jamais eu de valeur d'usage préalable en tant que bien non monétaire. Il n'a pas été d'abord un objet décoratif, un matériau industriel, ou une denrée alimentaire avant de devenir une monnaie. Sa première valorisation a été faite directement en tant que monnaie, par des individus qui ont estimé, subjectivement, que ce système avait de la valeur en tant qu'instrument d'échange et de réserve.
+Or Bitcoin vient directement contredire cette affirmation. Satoshi Nakamoto a explicitement conçu Bitcoin comme une monnaie dès l'origine, comme en témoigne le titre même du White Paper. Le bitcoin n'a jamais eu de valeur d'usage préalable en tant que bien non monétaire. Il n'a pas été d'abord un objet décoratif, un matériau industriel, ou une denrée alimentaire avant de devenir une monnaie. Sa première valorisation a été faite directement en tant que monnaie, par des individus qui ont estimé, subjectivement, que ce système avait de la valeur en tant qu'instrument d'échange et de réserve.
 
 Le théorème de régression contient en réalité une faille : il prétend s'appuyer sur la théorie subjective de la valeur, tout en imposant une contrainte objective sur ce qui peut ou ne peut pas être valorisé comme monnaie. Si la valeur est véritablement subjective, alors elle peut reposer sur n'importe quelle raison, y compris l'anticipation d'un usage monétaire futur. Le théorème, formulé comme une loi a priori, est en réalité fondé sur une observation empirique de l'évolution monétaire passée, et Bitcoin constitue précisément le contre-exemple qui l'invalide.
 
+018
+
 #### La distribution par la preuve de travail
 
-Confronté à ce problème de distribution initiale sans précédent, Satoshi a adopté un mécanisme plutôt élégant : les nouveaux bitcoins sont créés et distribués en échange du travail fourni pour faire fonctionner le système de consensus. Lorsqu'un mineur produit un bloc valide, le protocole l'autorise à créer un certain nombre de nouveaux bitcoins et à se les attribuer via la transaction coinbase. Ces bitcoins sont créés ex nihilo. La subvention est dégressive grâce aux halvings : elle commence à 50 BTC par bloc, puis est divisée par deux tous les 210 000 blocs, jusqu'à atteindre zéro aux alentours de l'an 2140. Ce calendrier est inscrit dans le code du protocole, et il garantit que la politique monétaire soit prévisible, vérifiable par tous, et non soumise à l'arbitraire d'une autorité.
+Confronté à ce problème de distribution initiale sans précédent, Satoshi a adopté un mécanisme plutôt élégant : les nouveaux bitcoins sont créés et distribués en échange du travail fourni pour faire fonctionner le système de consensus. Lorsqu'un mineur produit un bloc valide, le protocole l'autorise à créer un certain nombre de nouveaux bitcoins et à se les attribuer via la transaction coinbase. Ces bitcoins sont créés ex nihilo.
+
+Cette subvention est dégressive grâce aux halvings : elle commence à 50 BTC par bloc, puis est divisée par deux tous les 210 000 blocs, jusqu'à atteindre zéro aux alentours de l'an 2140. Ce calendrier est inscrit dans le code du protocole, et il garantit que la politique monétaire soit prévisible, vérifiable par tous, et non soumise à l'arbitraire d'une autorité.
 
 ### Pourquoi la preuve de travail est irremplaçable dans ces rôles ?
 
@@ -255,11 +263,13 @@ Enfin, la preuve de travail ne nécessite aucune coordination préalable entre l
 
 #### Pour la protection de l'historique
 
-L'avantage décisif de la preuve de travail pour la protection de l'historique tient à la nature de la ressource mobilisée. Le minage repose à la fin sur la consommation d'électricité, une ressource physique, tangible, universelle et surtout **externe** au système. C'est ce point qui distingue fondamentalement la preuve de travail de la preuve d'enjeu.
+L'avantage de la preuve de travail pour la protection de l'historique tient à la nature de la ressource mobilisée. Le minage repose à la fin sur la consommation d'électricité, une ressource physique, tangible, universelle et surtout **externe** au système. C'est ce point qui distingue fondamentalement la preuve de travail de la preuve d'enjeu.
 
 Dans un système de preuve d'enjeu, la ressource utilisée pour participer au consensus (la monnaie mise en jeu) est la même que celle distribuée en récompense. Cela signifie qu'une coalition détenant une part majoritaire de la monnaie peut maintenir indéfiniment sa position dominante. Un censeur qui acquiert la majorité de l'enjeu dans un système de preuve d'enjeu ne peut pas être évincé, car il contrôle la ressource même qui détermine l'autorité sur le système. La résistance à la censure devient alors impossible.
 
 Avec la preuve de travail, aucune coalition d'acteurs en place, même regroupant 100 % des participants actuels, ne peut empêcher un nouvel acteur d'entrer dans le jeu. La position de chacun dans cette compétition est toujours dynamique et dépend principalement des ressources énergétiques, financières et technologiques investies. L'électricité est une ressource naturellement distribuée dans l'univers : personne n'en a le monopole, et de nouvelles sources peuvent toujours être mobilisées.
+
+019
 
 La preuve de travail est ainsi irremplaçable parce qu'elle implique un coût marginal établi sur l'utilisation d'une ressource découverte, et non d'une ressource inventée. C'est la seule ressource naturelle que l'on peut solliciter sur un système informatique pour créer un coût marginal réel à la multiplication des votes. C'est cette propriété qui rend le système intrinsèquement ouvert et résilient dans un environnement hostile, y compris face à des attaques étatiques.
 
