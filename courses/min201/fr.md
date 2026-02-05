@@ -115,7 +115,7 @@ Le minage a connu une spécialisation progressive du matériel. Au lancement de 
 
 Maintenant que nous avons revu ensemble les bases du minage de Bitcoin, nous pouvons passer à la suite. Dans la partie suivante, nous allons d’abord clarifier le rôle de la preuve de travail sur Bitcoin. En effet, si nous avons déjà décrit son fonctionnement dans MIN 101, il reste à comprendre pourquoi tout cela est nécessaire. Nous verrons ensuite comment le temps est géré sur Bitcoin : nous avons évoqué l’horodatage et l’ajustement de la difficulté en fonction du temps, mais comment ces notions temporelles sont-elles coordonnées à l’échelle du réseau, et selon quelles règles ? Découvrons cela ensemble !
 
-# Sécurité cumulative et temporalité
+# Utilité du minage et temporalité
 
 ## L'utilité et le rôle de la preuve de travail sur Bitcoin
 
