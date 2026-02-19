@@ -281,10 +281,41 @@ Cela ne signifie pas nécessairement que cette distribution initiale est la plus
 
 Ce mécanisme présente également un alignement incitatif. Les bitcoins sont distribués précisément aux personnes qui contribuent au minage. Au début, lorsque le réseau était vulnérable et avait besoin d'être protégé, la subvention était élevée (50 BTC par bloc), ce qui a permis d'attirer des mineurs malgré l'incertitude sur la valeur future de la monnaie. À mesure que le réseau grandit, que le nombre d'utilisateurs augmente et que la confiance dans le système se renforce, la subvention diminue progressivement. Les frais de transaction, proportionnels à l'usage réel du système, prennent alors progressivement le relais comme source principale de rémunération des mineurs. Cette transition, programmée dès l'origine dans le protocole, assure une cohérence entre le niveau de résistance requis et les incitations économiques fournies aux acteurs qui la produisent.
 
-
 ## La gestion du temps sur Bitcoin
 
-Horodatage, validité des timestamps, MTP et notions réseau liées au temps (NAT).
+La notion de temps est fondamentale dans tout système informatique, et elle l'est encore davantage dans un système distribué comme Bitcoin. Comment des milliers de machines réparties à travers le monde, sans autorité centrale pour les synchroniser, peuvent-elles se mettre d'accord sur l'ordre des événements ? C'est précisément cette question que le protocole Bitcoin doit résoudre pour fonctionner.
+
+Dans ce chapitre, nous allons explorer en détail les mécanismes temporels qui permettent à Bitcoin de maintenir un consensus sur la chronologie des transactions : l'horodatage des blocs, le *Median Time Past* (MTP), le *Network-Adjusted Time* (NAT), et les règles de validité qui encadrent le tout.
+
+### L'horodatage
+
+#### Le concept d'horodatage en informatique
+
+L'horodatage est un mécanisme qui consiste à associer un repère temporel précis à un événement, une donnée, un message... Dans le contexte général des systèmes informatiques, l'horodatage sert à déterminer l'ordre chronologique des opérations et à vérifier l'intégrité des données en fonction du temps. On retrouve ce concept partout : dans les systèmes de fichiers (date de création et de modification d'un fichier), dans les journaux d'événements (*logs*) des serveurs, dans les bases de données, ou encore dans les protocoles de messagerie.
+
+020
+
+Dans un système centralisé, l'horodatage est relativement simple à gérer : un serveur central fait autorité et impose sa propre horloge comme référence. Tous les événements sont datés par rapport à cette horloge unique. Mais dans un système décentralisé comme Bitcoin, où il n'existe aucun serveur central de confiance, la question du temps devient un exercice de synchronisation. Comment s'assurer que tous les participants s'accordent sur l'heure du système, alors que chacun possède sa propre horloge, potentiellement décalée par rapport à celle des autres ? Et surtout, comment faire pour empêcher un acteur malveillant de manipuler le temps dans le système ?
+
+#### L'horodatage dans le contexte de Bitcoin
+
+Dans le *White Paper* de Bitcoin, Satoshi Nakamoto parle d'un "*timestamp server*" pour décrire ce que l'on appelle aujourd'hui la "*blockchain*". Cette terminologie n'a pas été choisie au hasard : avant d'être une "*blockchain*", Bitcoin est fondamentalement un système d'horodatage distribué. C'est d'ailleurs la raison pour laquelle certains bitcoiners préfèrent parler de "*timechain*".
+
+Il faut cependant bien comprendre ce que l'horodatage fait et ne fait pas sur Bitcoin. Ce n'est pas l'horodatage qui permet de déterminer l'ordre des transactions ou de savoir quel bloc est arrivé en premier. Cette fonction est assurée par la structure même de la chaîne : chaque bloc contient le hash de son prédécesseur, ce qui établit un ordre séquentiel strict via la hauteur des blocs. Un bloc à la hauteur `H` précède toujours un bloc à la hauteur `H+1`, même si, comme nous le verrons plus loin dans ce chapitre, l'horodatage du bloc `H+1` peut être antérieur à celui du bloc `H`. L'ordre chronologique des transactions repose donc sur la hauteur des blocs, et non sur leurs horodatages.
+
+Le rôle de l'horodatage est différent. Comme nous l'avons vu dans le chapitre précédent, cet horodatage se trouve dans l'entête de chaque bloc. Il est important de souligner que les transactions elles-mêmes ne contiennent pas d'horodatage : le seul repère temporel qui existe dans le système Bitcoin est celui inscrit dans l'entête des blocs par les mineurs, et scellé par la preuve de travail. Il n'y a aucun autre repère temporel dans le système.
+
+Nous avons compris à quoi ne sert pas l’horodatage, mais pourquoi faut-il malgré tout inclure une heure réelle dans Bitcoin ? En réalité, l’horodatage des blocs remplit deux fonctions essentielles au sein du protocole :
+
+Premièrement, il est utilisé pour le calcul de l'ajustement de la difficulté. Comme nous l'avons vu dans la formation MIN 101, tous les 2016 blocs, les nœuds comparent les horodatages du premier et du dernier bloc de la période écoulée pour estimer combien de temps il a fallu pour les miner. Sans cet horodatage commun, les nœuds seraient incapables d’aboutir à la même difficulté à appliquer pour la période suivante. Chaque nœud dispose de sa propre horloge, qui n’est pas nécessairement parfaitement synchronisée avec celle des autres, et surtout, tous ne reçoivent pas les blocs au même moment. Ne serait-ce que pour des raisons physiques liées au temps de propagation des données (l’électricité et les ondes électromagnétiques ne circulent ni instantanément, ni de manière parfaitement uniforme à travers le monde), des décalages existent inévitablement.
+
+Un autre problème concernerait les nœuds qui se connectent ou se reconnectent au réseau Bitcoin en cours d'une période. S’ils ne connaissent pas l’heure d’arrivée du premier bloc de la période en question, ils ne peuvent pas en déterminer la durée exacte, et donc recalculer correctement la nouvelle difficulté. C’est précisément grâce aux horodatages inscrits dans les blocs que tous les nœuds peuvent recalculer la difficulté de manière indépendante et parvenir exactement au même résultat.
+
+Secondement, l'horodatage sert également de référence temporelle pour les verrouillages temporels des transactions (*timelocks*). Certaines transactions Bitcoin peuvent être configurées pour n'être valides qu'à partir d'un certain moment dans le temps. Pour que tous les nœuds s'accordent sur le moment où une transaction verrouillée devient éligible à l'inclusion dans un bloc, les nœuds comparent le *timelock* dans le script de la transaction avec l'horodatage du bloc, et non avec l'horloge locale de chaque nœud. Cela garantit un consensus uniforme sur la validité temporelle des transactions.
+
+
+
+
 
 
 
